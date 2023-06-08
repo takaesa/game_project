@@ -2,6 +2,9 @@
 
 #include "GameObject.h"
 
+#define PLATFORM_PASSABLE 90000
+#define Push_Up_Platform	8.0f
+
 // 
 // The most popular type of object in Mario! 
 // 
@@ -12,6 +15,7 @@ protected:
 	float cellWidth;
 	float cellHeight;
 	int spriteIdBegin, spriteIdMiddle, spriteIdEnd;
+	int type;
 
 public: 
 	CPlatform(float x, float y,
@@ -26,11 +30,15 @@ public:
 		this->spriteIdEnd = sprite_id_end;
 	}
 
+
+	int getType() { return type; }
 	void Render();
 	void Update(DWORD dt) {}
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void RenderBoundingBox();
 	int IsDirectionColliable(float nx, float ny);
+
+		
 };
 
 typedef CPlatform* LPPLATFORM;
