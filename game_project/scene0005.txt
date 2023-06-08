@@ -4,10 +4,11 @@ mario.txt
 coin.txt
 cloud.txt
 brick.txt
+platform.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas, 4 = Platform,  7 = Plain, 9 = Pipe
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
@@ -17,32 +18,26 @@ brick.txt
 #BRICK
 1	200	70
 
+
 #COIN
-4	100	120
-4	120	120
-4	140	120
-4	160	120
-4	180	120
-
-
 4	100	100
-4	120	100
-4	140	100
-4	160	100
-4	180	100
-
-4	100	80
-4	120	80
-4	140	80
-4	160	80
-4	180	80
-
+4	100	200
+4	150	50
 
 
 
 #Platform
-5 	10	180	16	15	32	51000	52000	53000
+
+
+
 5	140	140	16	15	26	51000	52000	53000
+
+5	10	180	16	30	26	61000	62000	63000
+5	500	180	16	30	100	61000	62000	63000
+
+#Pipe
+9	10	100	16	15	32	91000	92000	93000
+
 
 #Portal 
 50	200	160	216	180	1

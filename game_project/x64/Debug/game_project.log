@@ -3,11 +3,9 @@
   Brick.cpp
   Coin.cpp
   Collision.cpp
-  debug.cpp
   Game.cpp
   GameObject.cpp
   Goomba.cpp
-  main.cpp
   Mario.cpp
   Platform.cpp
   PlayScene.cpp
@@ -16,7 +14,6 @@
   Sprite.cpp
   Sprites.cpp
   Textures.cpp
-  Utils.cpp
+  main.cpp
   Generating Code...
-  LINK : C:\Users\kuuha\OneDrive\Desktop\game_project\x64\Debug\game_project.exe not found or not built by the last incremental link; performing full link
   game_project.vcxproj -> C:\Users\kuuha\OneDrive\Desktop\game_project\x64\Debug\game_project.exe
