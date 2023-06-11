@@ -44,7 +44,7 @@ void CPlatform::Render()
 	if (length>1)
 		s->Get(this->spriteIdEnd)->Draw(xx, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CPlatform::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -56,8 +56,10 @@ void CPlatform::GetBoundingBox(float& l, float& t, float& r, float& b)
 	b = t + this->cellHeight;
 }
 
-int CPlatform::IsDirectionColliable(float nx, float ny)
-{
-	if (nx == 0 && ny == -1) return 1;
-	else return 0;
-}
+
+// delete to use for background
+//int CPlatform::IsDirectionColliable(float nx, float ny)
+//{
+//	if (nx == 0 && ny == -1) return 1;
+//	else return 0;
+//}

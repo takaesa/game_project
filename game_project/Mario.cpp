@@ -11,6 +11,10 @@
 #include "Collision.h"
 #include "Platform.h"
 
+#include "Brick.h"
+#include "Leaf.h"
+#include "MushRoom.h"
+
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -55,6 +59,12 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<CBrick*>(e->obj))
+		OnCollisionWithBrick(e);
+	else if (dynamic_cast<CLeaf*>(e->obj))
+		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<CMushRoom*>(e->obj))
+		OnCollisionWithMushRoom(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -97,6 +107,22 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	coin++;
 }
 
+void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+	y -= 10;
+	SetLevel(1);
+
+}
+
+void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+	y -= 10;
+	SetLevel(MARIO_LEVEL_BIG);
+
+}
+
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
@@ -129,6 +155,25 @@ void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 		SetState(MARIO_STATE_DIE);
 		break;
 	}
+}
+
+void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	float x, y;
+	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+	brick->GetPosition(x,y);
+	brick->Delete();
+
+	CLeaf* leaf = new CLeaf(x, y);
+	/*CCoin* coin = new CCoin(x,y);*/
+
+
+	// add coin tuong tu add nam
+	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+	thisscene->AddObjectToScene(leaf);
+
+
+
 }
 
 //
