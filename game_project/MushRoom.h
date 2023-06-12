@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Animations.h"
 #include "Animation.h"
-#include "Platform.h"
+
 #define ID_ANI_MUSHROOM 13000
 #define ID_ANI_MUSHROOM_LIFEUP 13001
 

@@ -1,7 +1,4 @@
-﻿  Mario.cpp
-  MushRoom.cpp
-  Platform.cpp
-  PlayScene.cpp
+﻿  PlayScene.cpp
   main.cpp
   Generating Code...
   game_project.vcxproj -> C:\Users\kuuha\OneDrive\Desktop\game_project\x64\Debug\game_project.exe

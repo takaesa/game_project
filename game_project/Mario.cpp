@@ -159,21 +159,30 @@ void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
-	float x, y;
+	float bx, by;
 	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-	brick->GetPosition(x,y);
-	brick->Delete();
+	brick->GetPosition(bx,by);
 
-	CLeaf* leaf = new CLeaf(x, y);
-	/*CCoin* coin = new CCoin(x,y);*/
-
-
-	// add coin tuong tu add nam
-	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-	thisscene->AddObjectToScene(leaf);
+	if (e->ny > 0)
+	{
+		//CLeaf* leaf = new CLeaf(x, y);
+		///*CCoin* coin = new CCoin(x,y);*/
 
 
+		//// add coin tuong tu add nam
+		//LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		//thisscene->AddObjectToScene(leaf);
 
+
+		CMushRoom* mushroom = new CMushRoom(x, y);
+		/*CCoin* coin = new CCoin(x,y);*/
+
+
+		// add coin tuong tu add nam
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		thisscene->AddObjectToScene(mushroom);
+		brick->Delete();
+	}
 }
 
 //
