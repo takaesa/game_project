@@ -20,13 +20,13 @@ void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	flyDistance += vy;
-	if ((this->flyable == true) && (coin_type == 1))
+	if (this->flyable == true && coin_type == 1)
 	{
 		if (flyDistance > COIN_DISTANCE)
 		{
 			vy = -vy;
 		}
-		else if (flyDistance <0 )
+		else if (flyDistance < 0 )
 		{
 			this->Delete();
 		}

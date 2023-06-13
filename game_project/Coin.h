@@ -15,7 +15,7 @@
 class CCoin : public CGameObject {
 	int coin_type = 0; //0: normal 1: in question block
 	bool flyable = false;
-	int flyDistance = 0;
+	float flyDistance = 0;
 public:
 	CCoin(float x, float y, int ct = 0) : CGameObject(x, y) {
 		this->coin_type = ct;
@@ -28,5 +28,6 @@ public:
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetFly(bool state) { this->flyable = state; }
 	int GetCoinType() { return this->coin_type;}
+	void OnNoCollision(DWORD dt) { y -= vy * dt; }
 	int IsBlocking() { return 0; }
 };

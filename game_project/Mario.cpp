@@ -186,7 +186,7 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			thisscene->AddObjectToScene(coin);
 
 			coin->SetFly(true);
-			questionbrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
+			questionbrick->SetPosition(bx, by);
 
 			coin++;
 			
@@ -203,7 +203,7 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			
 
 			questionbrick->Delete();
-			newQuestionBrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
+			newQuestionBrick->SetPosition(bx, by);
 
 			CMushRoom* mushroom = new CMushRoom(bx, by-32);
 			newQuestionBrick->SetEmpty(true);
@@ -221,7 +221,7 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			CQuestionBrick* newQuesttionBrick = new CQuestionBrick(bx, by);
 
 			questionbrick->Delete();
-			newQuesttionBrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
+			newQuesttionBrick->SetPosition(bx, by);
 
 			CLeaf* leaf = new CLeaf(bx+ 16, by -32);
 			newQuesttionBrick->SetEmpty(true);
