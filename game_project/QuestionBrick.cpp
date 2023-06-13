@@ -1,4 +1,8 @@
 #include "QuestionBrick.h"
+#include "debug.h"
+#include "MushRoom.h"
+#include "Leaf.h"
+
 
 void CQuestionBrick::Render()
 {

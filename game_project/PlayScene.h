@@ -7,6 +7,7 @@
 #include "Mario.h"
 #include "Goomba.h"
 #include "MushRoom.h"
+#include "QuestionBrick.h"
 //#include "Koopas.h"
 
 

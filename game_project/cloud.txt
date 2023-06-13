@@ -1,4 +1,4 @@
-# id	left	top	right	bottom	texture_id
+x# id	left	top	right	bottom	texture_id
 [SPRITES]
 #big cloud
 51000	390	117	405	132	20

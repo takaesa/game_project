@@ -7,7 +7,7 @@ brick.txt
 platform.txt
 leaf.txt
 mushroom.txt
-	
+questionbrick.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -63,9 +63,17 @@ mushroom.txt
 # MARIO
 0	120	10
 #Koopas
-3	150	150
+#3	150	150
 #BRICK
-1	200	70
+#1	200	100
+
+9	150	130	0
+9	166	130	0
+9	181	130	1
+9	197	130	1
+9	213	130	2
+9	229	130	2
+
 
 
 #COIN
@@ -100,6 +108,6 @@ mushroom.txt
 
 
 #Portal 
-150	200	160	216	180	1
+#150	200	160	216	180	1
 
 

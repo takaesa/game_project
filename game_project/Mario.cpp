@@ -14,6 +14,8 @@
 #include "Brick.h"
 #include "Leaf.h"
 #include "MushRoom.h"
+#include "QuestionBrick.h"
+
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -65,7 +67,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<CMushRoom*>(e->obj))
 		OnCollisionWithMushRoom(e);
+	else if (dynamic_cast<CQuestionBrick*>(e->obj))
+		OnCollisionWithQuestionBrick(e);
 }
+
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
@@ -88,7 +93,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			{
 				if (level > MARIO_LEVEL_SMALL)
 				{
-					level = MARIO_LEVEL_SMALL;
+					level = level - 1;
 					StartUntouchable();
 				}
 				else
@@ -109,18 +114,23 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
-	e->obj->Delete();
-	y -= 10;
-	SetLevel(1);
+	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
+
+	if (level == MARIO_LEVEL_BIG)
+	{
+		y = y - Push_Up_Platform * 2;
+		SetLevel(MARIO_LEVEL_TAIL);
+	}
+	leaf->Delete();
 
 }
 
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
+	CMushRoom* objmushroom = dynamic_cast<CMushRoom*>(e->obj);
 	e->obj->Delete();
-	y -= 10;
+	y = y - Push_Up_Platform * 2;
 	SetLevel(MARIO_LEVEL_BIG);
-
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -157,31 +167,68 @@ void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 	}
 }
 
-void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 {
-	float bx, by;
-	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-	brick->GetPosition(bx,by);
-
-	if (e->ny > 0)
+	
+	CQuestionBrick* questionbrick = dynamic_cast<CQuestionBrick*>(e->obj);
+	
+	if (e->ny > 0 && questionbrick->IsEmpty() == false)
 	{
-		//CLeaf* leaf = new CLeaf(x, y);
-		///*CCoin* coin = new CCoin(x,y);*/
+		if (questionbrick->GetBrickType() == 0) // coin
+		{
+			questionbrick->SetEmpty(true);
+			float bx, by;
+			questionbrick->GetPosition(bx, by);
 
+			CCoin* coin = new CCoin(bx, by - 2*COIN_WIDTH, 1);
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 
-		//// add coin tuong tu add nam
-		//LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		//thisscene->AddObjectToScene(leaf);
+			thisscene->AddObjectToScene(coin);
 
+			coin->SetFly(true);
+			questionbrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
 
-		CMushRoom* mushroom = new CMushRoom(x, y);
-		/*CCoin* coin = new CCoin(x,y);*/
+			coin++;
+			
+			/*CGame::GetInstance()->GetCurrentScene()->SetCoin(coin);*/
+		}
+		else if (questionbrick->GetBrickType() == 1) // mushroom
+		{
+			questionbrick->SetEmpty(true);
+			float bx, by;
+			questionbrick->GetPosition(bx, by);
 
+			CQuestionBrick* newQuestionBrick = new CQuestionBrick(bx, by, 0);
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			
 
-		// add coin tuong tu add nam
-		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		thisscene->AddObjectToScene(mushroom);
-		brick->Delete();
+			questionbrick->Delete();
+			newQuestionBrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
+
+			CMushRoom* mushroom = new CMushRoom(bx, by-32);
+			newQuestionBrick->SetEmpty(true);
+
+			thisscene->AddObjectToScene(mushroom);
+			thisscene->AddObjectToScene(newQuestionBrick);
+		}
+		else if (questionbrick->GetBrickType() == 2)
+		{
+			questionbrick->SetEmpty(true);
+			float bx, by;
+			questionbrick->GetPosition(bx, by);
+
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			CQuestionBrick* newQuesttionBrick = new CQuestionBrick(bx, by);
+
+			questionbrick->Delete();
+			newQuesttionBrick->SetPosition(bx, by - QUESTIONBRICK_OFFSET);
+
+			CLeaf* leaf = new CLeaf(bx+ 16, by -32);
+			newQuesttionBrick->SetEmpty(true);
+
+			thisscene->AddObjectToScene(leaf);
+			thisscene->AddObjectToScene(newQuesttionBrick);
+		}
 	}
 }
 
@@ -308,6 +355,65 @@ int CMario::GetAniIdBig()
 	return aniId;
 }
 
+int CMario::GetAniIdTail()
+{
+	int aniId = -1;
+	if (!isOnPlatform)
+	{
+		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_TAIL_JUMP_RUN_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_TAIL_JUMP_RUN_LEFT;
+		}
+		else
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_TAIL_JUMP_WALK_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_TAIL_JUMP_WALK_LEFT;
+		}
+	}
+	else
+		if (isSitting)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_TAIL_SIT_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_TAIL_SIT_LEFT;
+		}
+		else
+			if (vx == 0)
+			{
+				if (nx > 0) aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
+				else aniId = ID_ANI_MARIO_TAIL_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (ax < 0)
+					aniId = ID_ANI_MARIO_TAIL_BRACE_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_TAIL_RUNNING_RIGHT;
+				else if (ax == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_TAIL_WALKING_RIGHT;
+			}
+			else // vx < 0
+			{
+				if (ax > 0)
+					aniId = ID_ANI_MARIO_TAIL_BRACE_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_TAIL_RUNNING_LEFT;
+				else if (ax == -MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_TAIL_WALKING_LEFT;
+			}
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
+
+	return aniId;
+}
+
+
 void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
@@ -319,6 +425,8 @@ void CMario::Render()
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
+	else if (level == MARIO_LEVEL_TAIL)
+		aniId = GetAniIdTail();
 
 	animations->Get(aniId)->Render(x, y);
 
@@ -426,6 +534,23 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 	}
+	else if (level == MARIO_LEVEL_TAIL)
+	{
+		if (isSitting)
+		{
+			left = x - MARIO_TAIL_SITTING_BBOX_WIDTH / 2;
+			top = y - MARIO_TAIL_SITTING_BBOX_HEIGHT / 2;
+			right = left + MARIO_TAIL_SITTING_BBOX_WIDTH;
+			bottom = top + MARIO_TAIL_SITTING_BBOX_HEIGHT;
+		}
+		else
+		{
+			left = x - MARIO_TAIL_BBOX_WIDTH / 2;
+			top = y - MARIO_TAIL_BBOX_HEIGHT / 2;
+			right = left + MARIO_TAIL_BBOX_WIDTH;
+			bottom = top + MARIO_TAIL_BBOX_HEIGHT;
+		}
+	}
 	else
 	{
 		left = x - MARIO_SMALL_BBOX_WIDTH/2;
@@ -433,6 +558,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
+
 }
 
 void CMario::SetLevel(int l)
@@ -440,7 +566,14 @@ void CMario::SetLevel(int l)
 	// Adjust position to avoid falling off platform
 	if (this->level == MARIO_LEVEL_SMALL)
 	{
-		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		y -= 20;
+	}
+	else if (this->level == MARIO_LEVEL_BIG)
+	{
+		y -= 20;
+	}else if (this->level == MARIO_LEVEL_TAIL)
+	{
+		y -= 20;
 	}
 	level = l;
 }

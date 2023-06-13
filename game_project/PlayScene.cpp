@@ -13,6 +13,8 @@
 #include "BackGround.h"
 #include "SampleKeyEventHandler.h"
 #include "MushRoom.h"
+#include "QuestionBrick.h"
+#include "Leaf.h"
 
 using namespace std;
 
@@ -120,8 +122,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
+	case OBJECT_TYPE_QUESTION_BRICK: obj = new CQuestionBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 	case OBJECT_TYPE_MUSHROOM: obj = new CMushRoom(x, y); break;
+	case OBJECT_TYPE_LEAF: obj = new CLeaf(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{

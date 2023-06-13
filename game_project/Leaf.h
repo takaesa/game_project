@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Animation.h"
 #include "Animations.h"
+#include "QuestionBrick.h"
 
 #define ID_ANI_LEAF_RIGHT 80000
 #define ID_ANI_LEAF_LEFT 80001
