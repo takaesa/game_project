@@ -1,7 +1,7 @@
-﻿  Coin.cpp
-  Game.cpp
+﻿  Game.cpp
+  Goomba.cpp
+  Koopa.cpp
   Mario.cpp
-  MushRoom.cpp
   PlayScene.cpp
   SampleKeyEventHandler.cpp
   main.cpp

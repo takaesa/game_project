@@ -11,6 +11,7 @@ questionbrick.txt
 plain.txt
 firebullet.txt
 Koopa.txt
+goomba.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -66,7 +67,8 @@ Koopa.txt
 # MARIO
 0	120	10
 #Koopas
-3	150	150	2
+#3	150	150	2
+2	200	150	1
 #BRICK
 #1	200	100
 
