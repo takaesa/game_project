@@ -187,6 +187,14 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
+	void SetKickable(int kick)
+	{
+		this->kickable = kick;
+	}
+	int GetLevel()
+	{
+		return level;
+	}
 
 	int IsCollidable()
 	{ 
@@ -203,6 +211,7 @@ public:
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
 	bool GetCarryingState() { return isCarrying; }
+	void SetCarryingState(bool a) { this->isCarrying = a; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }
 };

@@ -34,6 +34,28 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable = 0;
 	}
 
+	if (shell != NULL && shell->GetState() == KOOPA_STATE_AWAKE)
+		isCarrying = false;
+	if (shell != NULL && shell->GetState() == KOOPA_STATE_CARRIED)
+	{
+		if (vx > 0)
+		{
+			shell->SetPosition(x + 16.0f, y - 1.0f);
+			shell->SetDir(-1);
+		}
+		else if (vx < 0)
+		{
+			shell->SetPosition(x - 16.0f, y - 1.0f);
+			shell->SetDir(1);
+		}
+		else
+		{
+			float koox, kooy;
+			shell->GetPosition(koox, kooy);
+			shell->SetPosition(koox, y - 1.0f);
+		}
+	}
+
 	isOnPlatform = false;
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -125,12 +147,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	// Jump on top >> Koopa turns into shell and Mario deflects a bit 
 	if (e->ny < 0)
 	{
-		if (koopa->GetType() == 3)
-		{
-			koopa->SetType(2);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-		}
-		else if (koopa->GetState() != KOOPA_STATE_SHELL)// When Koopa is in turtle form
+		if (koopa->GetState() != KOOPA_STATE_SHELL)// When Koopa is in turtle form
 		{
 			koopa->SetState(KOOPA_STATE_SHELL);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -139,7 +156,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		{
 			float koox, kooy;
 			koopa->GetPosition(koox, kooy);
-
+			koopa->SetPosition(koox, kooy - 5);
 			if (this->x < koox)
 				koopa->SetDir(-1);
 			else
@@ -175,21 +192,24 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			{
 				isCarrying = true;
 				koopa->SetState(KOOPA_STATE_CARRIED);
+				SetKickable(0);
 			}
 			else if (abs(ax) == abs(MARIO_ACCEL_WALK_X))
 			{
 				StartKickable();
-
+				float koox, kooy;
+				koopa->GetPosition(koox, kooy);
+				koopa->SetPosition(koox, kooy - 5);
 				if (e->nx < 0)
 					koopa->SetDir(-1);
 				else
 					koopa->SetDir(1);
 
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+				SetKickable(0);
 			}
 		}
-
-		if (untouchable == 0)
+		else if (untouchable == 0)
 		{
 			if (koopa->GetState() != KOOPA_STATE_SHELL && koopa->GetState() != KOOPA_STATE_SHELL + 1
 				&& kickable != 1 && koopa->GetState() != KOOPA_STATE_CARRIED)
@@ -723,14 +743,14 @@ void CMario::SetLevel(int l)
 	// Adjust position to avoid falling off platform
 	if (this->level == MARIO_LEVEL_SMALL)
 	{
-		y -= 20;
+		y -= 10;
 	}
 	else if (this->level == MARIO_LEVEL_BIG)
 	{
-		y -= 20;
+		y -= 10;
 	}else if (this->level == MARIO_LEVEL_TAIL)
 	{
-		y -= 20;
+		y -= 10;
 	}
 	level = l;
 }
