@@ -15,6 +15,9 @@
 #include "Leaf.h"
 #include "MushRoom.h"
 #include "QuestionBrick.h"
+#include "Plain.h"
+#include "FireBullet.h"
+#include "Koopa.h"
 
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -69,6 +72,12 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushRoom(e);
 	else if (dynamic_cast<CQuestionBrick*>(e->obj))
 		OnCollisionWithQuestionBrick(e);
+	else if (dynamic_cast<CPlain*>(e->obj))
+		OnCollisionWithPlain(e);
+	else if (dynamic_cast<CBullet*>(e->obj))
+		OnCollisionWithBullet(e);
+	else if (dynamic_cast<CKoopa*>(e->obj))
+		OnCollisionWithKoopa(e);
 }
 
 
@@ -106,6 +115,105 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 }
 
+void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	shell = koopa;
+	float koox, kooy;
+	koopa->GetPosition(koox, kooy);
+
+	// Jump on top >> Koopa turns into shell and Mario deflects a bit 
+	if (e->ny < 0)
+	{
+		if (koopa->GetType() == 3)
+		{
+			koopa->SetType(2);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (koopa->GetState() != KOOPA_STATE_SHELL)// When Koopa is in turtle form
+		{
+			koopa->SetState(KOOPA_STATE_SHELL);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (koopa->GetState() == KOOPA_STATE_SHELL)// When Koopa is in shell form
+		{
+			float koox, kooy;
+			koopa->GetPosition(koox, kooy);
+
+			if (this->x < koox)
+				koopa->SetDir(-1);
+			else
+				koopa->SetDir(1);
+
+			koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (koopa->GetState() == KOOPA_STATE_SHELL_MOVING)	// When Koopa is in shell form and moving
+		{
+			koopa->SetState(KOOPA_STATE_SHELL);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	else // Collide X with Koopa
+	{
+		if (hittable == 1)
+		{
+			if (e->nx < 0 && nx > 0)
+			{
+				koopa->SetStateFlipped(true);
+				koopa->SetState(KOOPA_STATE_SHELL);
+			}
+			else if (e->nx > 0 && nx < 0)
+			{
+				koopa->SetStateFlipped(true);
+				koopa->SetState(KOOPA_STATE_SHELL);
+			}
+		}
+		else if (koopa->GetState() == KOOPA_STATE_SHELL || koopa->GetState() == KOOPA_STATE_SHELL + 1 || koopa->GetState() == KOOPA_STATE_CARRIED)
+		{
+			if (abs(ax) == abs(MARIO_ACCEL_RUN_X))
+			{
+				isCarrying = true;
+				koopa->SetState(KOOPA_STATE_CARRIED);
+			}
+			else if (abs(ax) == abs(MARIO_ACCEL_WALK_X))
+			{
+				StartKickable();
+
+				if (e->nx < 0)
+					koopa->SetDir(-1);
+				else
+					koopa->SetDir(1);
+
+				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
+			}
+		}
+
+		if (untouchable == 0)
+		{
+			if (koopa->GetState() != KOOPA_STATE_SHELL && koopa->GetState() != KOOPA_STATE_SHELL + 1
+				&& kickable != 1 && koopa->GetState() != KOOPA_STATE_CARRIED)
+			{
+				if (level == MARIO_LEVEL_TAIL)
+				{
+					level = MARIO_LEVEL_BIG;
+					StartUntouchable();
+				}
+				else if (level == MARIO_LEVEL_BIG)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+				{
+					DebugOut(L">>> Mario DIE >>> \n");
+					SetState(MARIO_STATE_DIE);
+				}
+			}
+		}
+	}
+}
+
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
@@ -130,7 +238,8 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 	CMushRoom* objmushroom = dynamic_cast<CMushRoom*>(e->obj);
 	e->obj->Delete();
 	y = y - Push_Up_Platform * 2;
-	SetLevel(MARIO_LEVEL_BIG);
+	if (level == MARIO_LEVEL_SMALL)
+		SetLevel(MARIO_LEVEL_BIG);
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -231,6 +340,54 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 		}
 	}
 }
+
+void CMario::OnCollisionWithPlain(LPCOLLISIONEVENT e)
+{
+	CPlain* objplain = dynamic_cast<CPlain*>(e->obj);
+
+	if (hittable == 1)
+	{
+		if (e->nx < 0 && nx > 0)
+		{
+			objplain->Delete();
+		}
+		else if (e->nx > 0 && nx < 0)
+		{
+			objplain->Delete();
+		}
+	}
+	else if (untouchable == 0)
+	{
+		if (level == MARIO_LEVEL_TAIL)
+			level = MARIO_LEVEL_BIG;
+		else if (level == MARIO_LEVEL_BIG)
+			level = MARIO_LEVEL_SMALL;
+		else
+			SetState(MARIO_STATE_DIE);
+
+		StartUntouchable();
+	}
+}
+
+void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
+{
+	CBullet* bullet = dynamic_cast<CBullet*>(e->obj);
+
+	if (untouchable == 0)
+	{
+		if (level == MARIO_LEVEL_TAIL)
+			level = MARIO_LEVEL_BIG;
+		else if (level == MARIO_LEVEL_BIG)
+			level = MARIO_LEVEL_SMALL;
+		else
+			SetState(MARIO_STATE_DIE);
+
+		StartUntouchable();
+	}
+
+	bullet->Delete();
+}
+
 
 //
 // Get animation ID for small Mario

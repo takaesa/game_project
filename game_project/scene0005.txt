@@ -8,6 +8,9 @@ platform.txt
 leaf.txt
 mushroom.txt
 questionbrick.txt
+plain.txt
+firebullet.txt
+Koopa.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -63,7 +66,7 @@ questionbrick.txt
 # MARIO
 0	120	10
 #Koopas
-#3	150	150
+3	150	150	2
 #BRICK
 #1	200	100
 
@@ -101,7 +104,13 @@ questionbrick.txt
 
 5	0	196	16	17	44	61000	62000	63000
 
+#plain
+10	415	152	0
+#green pipe
 5	400	165	16	48	3	60001	60002	60003
+
+
+
 
 5	1280	196	16	17	35	61000	62000	63000
 

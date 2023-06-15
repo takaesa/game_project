@@ -3,7 +3,7 @@
 
 #include "Animation.h"
 #include "Animations.h"
-
+#include "Koopa.h"
 #include "debug.h"
 
 #define MARIO_WALKING_SPEED		0.1f
@@ -136,7 +136,15 @@ class CMario : public CGameObject
 
 	int level; 
 	int untouchable; 
+	int kickable;
+	int hittable;
+
 	ULONGLONG untouchable_start;
+	ULONGLONG kickable_start;
+	ULONGLONG hittable_start;
+
+	CKoopa* shell = NULL;
+	bool isCarrying = false;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -148,6 +156,9 @@ class CMario : public CGameObject
 	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushRoom(LPCOLLISIONEVENT e);
+	void OnCollisionWithPlain(LPCOLLISIONEVENT e);
+	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 
 
 	int GetAniIdBig();
@@ -164,6 +175,11 @@ public:
 
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
+		kickable = 0;
+		hittable = 0;
+		kickable_start = -1;
+		hittable_start = -1;
+
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
@@ -184,7 +200,9 @@ public:
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
-
+	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
+	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
+	bool GetCarryingState() { return isCarrying; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }
 };

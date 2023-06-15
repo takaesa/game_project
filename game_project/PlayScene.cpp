@@ -15,6 +15,8 @@
 #include "MushRoom.h"
 #include "QuestionBrick.h"
 #include "Leaf.h"
+#include "Plain.h"
+#include "FireBullet.h"
 
 using namespace std;
 
@@ -121,8 +123,27 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
+	case OBJECT_TYPE_KOOPA:
+	{
+		int koopaType = (int)atoi(tokens[3].c_str());
+
+		obj = new CKoopa(x, y, koopaType);
+		break;
+	}
+	case OBJECT_TYPE_PLAIN:
+	{
+		int plaintype = (int)atoi(tokens[3].c_str());
+
+		obj = new CPlain(x, y, plaintype);
+		break;
+	}
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
-	case OBJECT_TYPE_QUESTION_BRICK: obj = new CQuestionBrick(x,y); break;
+	case OBJECT_TYPE_QUESTION_BRICK:
+	{
+		int brick_type = (int)atoi(tokens[3].c_str());
+		obj = new CQuestionBrick(x, y, brick_type);
+		break;
+	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 	case OBJECT_TYPE_MUSHROOM: obj = new CMushRoom(x, y); break;
 	case OBJECT_TYPE_LEAF: obj = new CLeaf(x, y); break;
