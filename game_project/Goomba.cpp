@@ -14,11 +14,13 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 {
 	if (state == GOOMBA_STATE_DIE)
 	{
-		left = x - GOOMBA_BBOX_WIDTH / 2;
-		top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
-		right = left + GOOMBA_BBOX_WIDTH;
-		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
-
+		if (type == 0)
+		{
+			left = x - GOOMBA_BBOX_WIDTH / 2;
+			top = y - GOOMBA_BBOX_HEIGHT_DIE / 2;
+			right = left + GOOMBA_BBOX_WIDTH;
+			bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
+		}
 	}
 	else
 	{
@@ -33,8 +35,8 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 		{
 			left = x - GOOMBA_BBOX_WIDTH_WING / 2;
 			top = y - GOOMBA_BBOX_HEIGHT_WING / 2;
-			right = left + GOOMBA_BBOX_WIDTH;
-			bottom = top + GOOMBA_BBOX_HEIGHT;
+			right = left + GOOMBA_BBOX_WIDTH_WING;
+			bottom = top + GOOMBA_BBOX_HEIGHT_WING;
 		}
 	}
 }
@@ -133,7 +135,7 @@ void CGoomba::Render()
 		aniId = ID_ANI_GOOMBA_FLIP;
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)

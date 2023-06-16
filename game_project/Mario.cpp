@@ -110,10 +110,19 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	// jump on top >> kill Goomba and deflect a bit 
 	if (e->ny < 0)
 	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+
+		if (goomba->GetState() == GOOMBA_STATE_WALKING_WING)
+		{
+			float goox, gooy;
+			goomba->GetPosition(goox, gooy);
+			goomba->SetPosition(goox, gooy - 10);
+			goomba->SetState(GOOMBA_STATE_WALKING);
+
+		}
+		else if (goomba->GetState() == GOOMBA_STATE_WALKING)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
 	else // hit by Goomba
@@ -340,7 +349,7 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			thisscene->AddObjectToScene(mushroom);
 			thisscene->AddObjectToScene(newQuestionBrick);
 		}
-		else if (questionbrick->GetBrickType() == 2)
+		else if (questionbrick->GetBrickType() == 2) //leaf
 		{
 			questionbrick->SetEmpty(true);
 			float bx, by;

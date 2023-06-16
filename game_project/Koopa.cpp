@@ -6,14 +6,17 @@
 #include "TransparentBlock.h"
 #include "Game.h"
 #include "Debug.h"
+#include "FallWarning.h"
 
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
+	fallwarning = new CFallWarning( x,  y);
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
 	this->type = type;
 	shell_start = -1;
 	SetState(KOOPA_STATE_WALKING);
+	
 }
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -161,7 +164,19 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
+	if (state == KOOPA_STATE_WALKING)
+	{
+		float FWx, FWy;
+		if (vx > 0)
+			fallwarning->SetPosition(this->x + KOOPA_BBOX_WIDTH, this->y - KOOPA_BBOX_HEIGHT);
+		else
+			fallwarning->SetPosition(this->x - KOOPA_BBOX_WIDTH, this->y - KOOPA_BBOX_HEIGHT);
+		fallwarning->Update(dt, coObjects);
 
+		fallwarning->GetPosition(FWx, FWy);
+		if (FWx >= this->y + 1)
+			vx = -vx;
+	}
 	if (type == 1 || type == 3)
 	{
 		if (vy <= -KOOPA_JUMP_SPEED)
