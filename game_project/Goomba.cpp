@@ -123,13 +123,13 @@ void CGoomba::Render()
 	case 1:
 		aniId = ID_ANI_GOOMBA_WALKING_WING;
 		break;
-	
+
 	}
 
 	if (state == GOOMBA_STATE_DIE)
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
-			
+
 	}
 	else if (state == GOOMBA_STATE_FLIPPED && type == 0)
 		aniId = ID_ANI_GOOMBA_FLIP;
