@@ -24,7 +24,7 @@ void CFallWarning::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void CFallWarning::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CFallWarning::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

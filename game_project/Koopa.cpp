@@ -116,8 +116,8 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 {
 	CQuestionBrick* qbrick = dynamic_cast <CQuestionBrick*> (e->obj);
 	if (state != KOOPA_STATE_SHELL_MOVING) return;
-
-	if (e->nx > 0)
+	
+	if (e->nx < 0 && state == KOOPA_STATE_SHELL_MOVING)
 	{
 		if (qbrick->GetBrickType() == 1)		//Mushroom
 		{
@@ -230,7 +230,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CKoopa::Render()
 {
 	int aniId = -1;
-	fallwarning->RenderBoundingBox();
+	/*fallwarning->RenderBoundingBox();*/
 	switch (type)
 	{
 	case 2:				//Normal Red
