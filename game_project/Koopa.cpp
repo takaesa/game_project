@@ -7,7 +7,8 @@
 #include "Game.h"
 #include "Debug.h"
 #include "FallWarning.h"
-
+#include "Mario.h"
+#include "PlayScene.h"
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
 	fallwarning = new CFallWarning( x,  y);
@@ -115,6 +116,9 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 {
 	CQuestionBrick* qbrick = dynamic_cast <CQuestionBrick*> (e->obj);
+	LPGAME game = CGame::GetInstance();
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	if (state != KOOPA_STATE_SHELL_MOVING) return;
 	
 	if (e->nx < 0 && state == KOOPA_STATE_SHELL_MOVING)
@@ -138,24 +142,45 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			thisscene->AddObjectToScene(newmushroom);
 			thisscene->AddObjectToScene(newquestionbrick);
 		}
-		else if (qbrick->GetBrickType() == 2)		//Leaf
+		else if (qbrick->GetBrickType() == 2) //leaf
 		{
-			qbrick->SetEmpty(true);
-			float bx, by;
-			qbrick->GetPosition(bx, by);
+			if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+			{
+				qbrick->SetEmpty(true);
+				float bx, by;
+				qbrick->GetPosition(bx, by);
 
-			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-			CQuestionBrick* newquestionbrick = new CQuestionBrick(bx, by);
-
-			qbrick->Delete();
-			newquestionbrick->SetPosition(bx, by );
+				CQuestionBrick* newQuestionBrick = new CQuestionBrick(bx, by, 0);
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 
 
-			CLeaf* newleaf = new CLeaf(bx + 16, by - 32);
-			newquestionbrick->SetEmpty(true);
+				qbrick->Delete();
+				newQuestionBrick->SetPosition(bx, by);
 
-			thisscene->AddObjectToScene(newleaf);
-			thisscene->AddObjectToScene(newquestionbrick);
+				CMushRoom* mushroom = new CMushRoom(bx, by - 32);
+				newQuestionBrick->SetEmpty(true);
+
+				thisscene->AddObjectToScene(mushroom);
+				thisscene->AddObjectToScene(newQuestionBrick);
+			}
+			else {
+				qbrick->SetEmpty(true);
+				float bx, by;
+				qbrick->GetPosition(bx, by);
+
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+				CQuestionBrick* newQuesttionBrick = new CQuestionBrick(bx, by);
+
+				qbrick->Delete();
+				newQuesttionBrick->SetPosition(bx, by);
+
+				CLeaf* leaf = new CLeaf(bx + 16, by - 32);
+				newQuesttionBrick->SetEmpty(true);
+
+				thisscene->AddObjectToScene(leaf);
+				thisscene->AddObjectToScene(newQuesttionBrick);
+			}
+
 		}
 	}
 }
