@@ -351,21 +351,43 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 		}
 		else if (questionbrick->GetBrickType() == 2) //leaf
 		{
-			questionbrick->SetEmpty(true);
-			float bx, by;
-			questionbrick->GetPosition(bx, by);
+			if (level == MARIO_LEVEL_SMALL)
+			{
+				questionbrick->SetEmpty(true);
+				float bx, by;
+				questionbrick->GetPosition(bx, by);
 
-			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-			CQuestionBrick* newQuesttionBrick = new CQuestionBrick(bx, by);
+				CQuestionBrick* newQuestionBrick = new CQuestionBrick(bx, by, 0);
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 
-			questionbrick->Delete();
-			newQuesttionBrick->SetPosition(bx, by);
 
-			CLeaf* leaf = new CLeaf(bx+ 16, by -32);
-			newQuesttionBrick->SetEmpty(true);
+				questionbrick->Delete();
+				newQuestionBrick->SetPosition(bx, by);
 
-			thisscene->AddObjectToScene(leaf);
-			thisscene->AddObjectToScene(newQuesttionBrick);
+				CMushRoom* mushroom = new CMushRoom(bx, by - 32);
+				newQuestionBrick->SetEmpty(true);
+
+				thisscene->AddObjectToScene(mushroom);
+				thisscene->AddObjectToScene(newQuestionBrick);
+			}
+			else {
+				questionbrick->SetEmpty(true);
+				float bx, by;
+				questionbrick->GetPosition(bx, by);
+
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+				CQuestionBrick* newQuesttionBrick = new CQuestionBrick(bx, by);
+
+				questionbrick->Delete();
+				newQuesttionBrick->SetPosition(bx, by);
+
+				CLeaf* leaf = new CLeaf(bx + 16, by - 32);
+				newQuesttionBrick->SetEmpty(true);
+
+				thisscene->AddObjectToScene(leaf);
+				thisscene->AddObjectToScene(newQuesttionBrick);
+			}
+			
 		}
 	}
 }

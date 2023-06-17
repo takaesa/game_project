@@ -164,8 +164,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
-	if (state == KOOPA_STATE_WALKING)
-	{
+	if (state == KOOPA_STATE_WALKING || state == KOOPA_STATE_WALKING+ 1){
 		float FWx, FWy;
 		if (vx > 0)
 			fallwarning->SetPosition(this->x + KOOPA_BBOX_WIDTH, this->y - KOOPA_BBOX_HEIGHT);
@@ -174,8 +173,10 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		fallwarning->Update(dt, coObjects);
 
 		fallwarning->GetPosition(FWx, FWy);
-		if (FWx >= this->y + 1)
+		if (FWy >= this->y + 1)
+		{
 			vx = -vx;
+		}
 	}
 	if (type == 1 || type == 3)
 	{
@@ -229,7 +230,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CKoopa::Render()
 {
 	int aniId = -1;
-	
+	fallwarning->RenderBoundingBox();
 	switch (type)
 	{
 	case 2:				//Normal Red

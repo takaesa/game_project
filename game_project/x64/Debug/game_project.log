@@ -1,9 +1,2 @@
-﻿  Game.cpp
-  Goomba.cpp
-  Koopa.cpp
-  Mario.cpp
-  PlayScene.cpp
-  SampleKeyEventHandler.cpp
-  main.cpp
-  Generating Code...
+﻿  Mario.cpp
   game_project.vcxproj -> C:\Users\kuuha\OneDrive\Desktop\game_project\x64\Debug\game_project.exe
