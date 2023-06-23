@@ -183,9 +183,15 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			koopa->GetPosition(koox, kooy);
 			koopa->SetPosition(koox, kooy - 5);
 			if (this->x < koox)
+			{
 				koopa->SetDir(-1);
+				StartKickable();
+			}
 			else
+			{
 				koopa->SetDir(1);
+				StartKickable();
+			}
 
 			koopa->SetState(KOOPA_STATE_SHELL_MOVING);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -234,6 +240,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				koopa->SetState(KOOPA_STATE_SHELL_MOVING);
 				SetKickable(0);
 			}
+			SetCarryingObject(false);
 		}
 		else if (untouchable == 0)
 		{
@@ -488,6 +495,13 @@ int CMario::GetAniIdSmall()
 			else
 				aniId = ID_ANI_MARIO_SIT_LEFT;
 		}
+		else if (kickable == 1)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_SMALL_KICK_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_SMALL_KICK_LEFT;
+		}
 		else
 			if (vx == 0)
 			{
@@ -550,6 +564,13 @@ int CMario::GetAniIdBig()
 			else
 				aniId = ID_ANI_MARIO_SIT_LEFT;
 		}
+		else if (kickable == 1)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_KICK_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_KICK_LEFT;
+		}
 		else
 			if (vx == 0)
 			{
@@ -608,6 +629,13 @@ int CMario::GetAniIdTail()
 			else
 				aniId = ID_ANI_MARIO_TAIL_SIT_LEFT;
 		}
+		else if (kickable == 1)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_TAIL_KICK_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_TAIL_KICK_LEFT;
+		}
 		else
 			if (vx == 0)
 			{
@@ -632,7 +660,7 @@ int CMario::GetAniIdTail()
 				else if (ax == -MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_TAIL_WALKING_LEFT;
 			}
-
+		
 	if (aniId == -1) aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
 
 	return aniId;
