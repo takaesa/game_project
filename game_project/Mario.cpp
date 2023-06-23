@@ -221,8 +221,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		{
 			if (abs(ax) == abs(MARIO_ACCEL_RUN_X))
 			{
-				//isCarrying = true;
-				SetCarryingObject(true);
+				isCarrying = true;
+				//SetCarryingObject(true);
 				koopa->SetState(KOOPA_STATE_CARRIED);
 				SetKickable(0);
 			}
@@ -704,6 +704,13 @@ void CMario::SetState(int state)
 
 	switch (state)
 	{
+	case MARIO_STATE_CARRY_RELEASE:
+		if (isCarrying == true)
+		{
+			isCarrying = false;
+			shell->SetState(KOOPA_STATE_SHELL_MOVING);
+		}
+		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
 		maxVx = MARIO_RUNNING_SPEED;
