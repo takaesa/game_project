@@ -28,6 +28,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
+	if (GetTickCount64() - change_start > 600)
+	{
+		isChanging = false;
+		change_start = 0;
+	}
+	if (kickable)
+	{
+		if (GetTickCount64() - kickable_start > 100)
+		{
+			kickable = 0;
+			kickable_start = 0;
+		}
+	}
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		untouchable_start = 0;
@@ -35,7 +48,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	if (shell != NULL && shell->GetState() == KOOPA_STATE_AWAKE)
+	{
 		isCarrying = false;
+		isCarryingObject = false;
+	}
+		
 	if (shell != NULL && shell->GetState() == KOOPA_STATE_CARRIED)
 	{
 		if (vx > 0)
@@ -55,7 +72,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			shell->SetPosition(koox, y - 1.0f);
 		}
 	}
-
+	
 	isOnPlatform = false;
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -198,7 +215,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		{
 			if (abs(ax) == abs(MARIO_ACCEL_RUN_X))
 			{
-				isCarrying = true;
+				//isCarrying = true;
+				SetCarryingObject(true);
 				koopa->SetState(KOOPA_STATE_CARRIED);
 				SetKickable(0);
 			}
@@ -634,9 +652,18 @@ void CMario::Render()
 		aniId = GetAniIdSmall();
 	else if (level == MARIO_LEVEL_TAIL)
 		aniId = GetAniIdTail();
-
-	animations->Get(aniId)->Render(x, y);
-
+	if (!untouchable)
+	{
+		animations->Get(aniId)->Render(x, y);
+	}
+	else if (untouchable)
+	{
+		int check = rand() % 2;
+		if (check == 0)
+		{
+			animations->Get(aniId)->Render(x, y);
+		}
+	}
 	//RenderBoundingBox();
 	
 	DebugOutTitle(L"Coins: %d", coin);
@@ -782,6 +809,9 @@ void CMario::SetLevel(int l)
 	{
 		y -= 10;
 	}
+	isChanging = true;
+	change_start = GetTickCount64();
 	level = l;
+	
 }
 

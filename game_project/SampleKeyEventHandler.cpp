@@ -50,6 +50,16 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT_RELEASE);
 		break;
+	case DIK_A:
+		if (mario->GetCarryingState() && mario->GetCarryingObject())
+		{
+			//mario->SetKickable(1);
+			mario->StartKickable();
+		}
+		mario->SetCarryingState(false);
+		mario->SetCarryingObject(false);
+		
+		break;
 	}
 }
 
@@ -76,7 +86,9 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		}
 		else
+		{
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
+		}
 	}
 	else
 		mario->SetState(MARIO_STATE_IDLE);

@@ -138,13 +138,16 @@ class CMario : public CGameObject
 	int untouchable; 
 	int kickable;
 	int hittable;
+	bool isChanging = false;
 
 	ULONGLONG untouchable_start;
 	ULONGLONG kickable_start;
 	ULONGLONG hittable_start;
+	ULONGLONG change_start;
 
 	CKoopa* shell = NULL;
 	bool isCarrying = false;
+	bool isCarryingObject = false;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -179,6 +182,7 @@ public:
 		hittable = 0;
 		kickable_start = -1;
 		hittable_start = -1;
+		change_start = -1;
 
 		untouchable_start = -1;
 		isOnPlatform = false;
@@ -206,11 +210,14 @@ public:
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
-	void SetLevel(int l);
+	void SetLevel(int l)
+		;
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
 	bool GetCarryingState() { return isCarrying; }
+	bool GetCarryingObject() { return isCarryingObject; }
+	void SetCarryingObject(bool obj) { this->isCarryingObject = obj; }
 	void SetCarryingState(bool a) { this->isCarrying = a; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }
