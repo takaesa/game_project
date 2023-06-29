@@ -26,6 +26,9 @@
 
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_RELEASE_JUMP    301
+#define MARIO_STATE_FLY				302
+#define MARIO_LANDING_SPEED	0.03f
+
 
 #define MARIO_STATE_RUNNING_RIGHT	400
 #define MARIO_STATE_RUNNING_LEFT	500
@@ -34,6 +37,11 @@
 #define MARIO_STATE_SIT_RELEASE		601
 
 #define MARIO_STATE_CARRY_RELEASE	900
+#define MARIO_P_TIME 4000
+
+#define MARIO_FLY_SPEED 0.12f
+#define MARIO_ACCEL_FLY_X 0.0003f
+#define MARIO_STATE_LANDING 1100
 
 #pragma region ANIMATION_ID
 
@@ -105,9 +113,12 @@
 #define ID_ANI_MARIO_TAIL_RUNNING_LEFT 2301
 #define ID_ANI_MARIO_TAIL_WALKING_LEFT 2201
 #define ID_ANI_MARIO_TAIL_KICK_LEFT 2901
+#define ID_ANI_MARIO_TAIL_FLY_RIGHT 2620
+#define ID_ANI_MARIO_TAIL_FLY_LEFT 2621
 
 
-	
+#define ID_ANI_TAIL_LANDING_RIGHT	27000
+#define ID_ANI_TAIL_LANDING_LEFT	27001
 
 #pragma endregion
 
@@ -148,16 +159,19 @@ class CMario : public CGameObject
 	int untouchable; 
 	int kickable;
 	int hittable;
+	bool flyable = false;
 	bool isChanging = false;
 
 	ULONGLONG untouchable_start;
 	ULONGLONG kickable_start;
 	ULONGLONG hittable_start;
 	ULONGLONG change_start;
+	ULONGLONG flyable_start;
 
 	CKoopa* shell = NULL;
 	bool isCarrying = false;
 	bool isCarryingObject = false;
+	bool isFlying = false;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -193,6 +207,7 @@ public:
 		kickable_start = -1;
 		hittable_start = -1;
 		change_start = -1;
+		flyable_start = -1;
 
 		untouchable_start = -1;
 		isOnPlatform = false;
@@ -225,10 +240,12 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
+	void StartFlying() { isFlying = true; flyable_start = GetTickCount64(); }
 	bool GetCarryingState() { return isCarrying; }
 	bool GetCarryingObject() { return isCarryingObject; }
 	void SetCarryingObject(bool obj) { this->isCarryingObject = obj; }
 	void SetCarryingState(bool a) { this->isCarrying = a; }
+	bool GetFlyingState(){ return isFlying; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }
 };

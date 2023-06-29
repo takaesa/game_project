@@ -41,6 +41,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			kickable_start = 0;
 		}
 	}
+	//flying
+	if (GetTickCount64() - flyable_start > MARIO_P_TIME)
+	{
+		isFlying = false;
+		flyable = false;
+		flyable_start = -1;
+	}
 	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
 	{
 		untouchable_start = 0;
@@ -612,12 +619,19 @@ int CMario::GetAniIdTail()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		if (isFlying)
 		{
 			if (nx >= 0)
-				aniId = ID_ANI_MARIO_TAIL_JUMP_RUN_RIGHT;
+				aniId = ID_ANI_MARIO_TAIL_FLY_RIGHT;
 			else
-				aniId = ID_ANI_MARIO_TAIL_JUMP_RUN_LEFT;
+				aniId = ID_ANI_MARIO_TAIL_FLY_LEFT;
+		}
+		else if (abs(ax) == MARIO_ACCEL_RUN_X || vx!= 0.0f)
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_TAIL_LANDING_RIGHT;
+			else
+				aniId = ID_ANI_TAIL_LANDING_LEFT;
 		}
 		else
 		{
@@ -719,14 +733,39 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
-		maxVx = MARIO_RUNNING_SPEED;
-		ax = MARIO_ACCEL_RUN_X;
+
+		if (isFlying && !isOnPlatform && flyable)
+			maxVx = MARIO_FLY_SPEED;
+		else if (isCarrying)
+			maxVx = MARIO_RUNNING_SPEED;
+		else if (isOnPlatform)
+			maxVx = MARIO_RUNNING_SPEED;
+		
+		if (vx < 0)
+			ax = MARIO_ACCEL_RUN_X * 3;
+		else if (isFlying == true && !isOnPlatform && flyable)
+			ax = MARIO_ACCEL_FLY_X;
+		else if (isOnPlatform)
+			ax = MARIO_ACCEL_RUN_X;
+		
 		nx = 1;
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
-		maxVx = -MARIO_RUNNING_SPEED;
-		ax = -MARIO_ACCEL_RUN_X;
+
+		if (isFlying && !isOnPlatform && flyable)
+			maxVx = -MARIO_FLY_SPEED;
+		else if (isCarrying)
+			maxVx = -MARIO_RUNNING_SPEED;
+		else if (isOnPlatform)
+			maxVx = -MARIO_RUNNING_SPEED;
+
+		if (vx > 0)
+			ax = -MARIO_ACCEL_RUN_X * 3;
+		else if (isFlying == true && !isOnPlatform && flyable)
+			ax = -MARIO_ACCEL_FLY_X;
+		else if (isOnPlatform)
+			ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
@@ -741,11 +780,24 @@ void CMario::SetState(int state)
 		ax = -MARIO_ACCEL_WALK_X;
 		nx = -1;
 		break;
+	case MARIO_STATE_LANDING:
+		vy = -MARIO_LANDING_SPEED;
+		break;
+	case MARIO_STATE_FLY:
+		if (isFlying)
+			vy = -MARIO_JUMP_SPEED_Y;
+		flyable = true;
+		break;
 	case MARIO_STATE_JUMP:
 		if (isSitting) break;
 		if (isOnPlatform)
 		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+			if (abs(vx) == abs(MARIO_RUNNING_SPEED) && level == MARIO_LEVEL_TAIL)
+			{
+				StartFlying();
+				vy = -MARIO_JUMP_SPEED_Y;
+			}
+			else if (abs(this->vx) == MARIO_RUNNING_SPEED)
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
