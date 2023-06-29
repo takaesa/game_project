@@ -328,7 +328,14 @@ void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 		break;
 	}
 }
-
+void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+	if (e->ny > 0)
+	{
+		brick->Delete();
+	}
+}
 void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 {
 	
@@ -411,7 +418,6 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 				thisscene->AddObjectToScene(leaf);
 				thisscene->AddObjectToScene(newQuesttionBrick);
 			}
-			
 		}
 	}
 }

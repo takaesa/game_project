@@ -15,6 +15,8 @@ x# id	left	top	right	bottom	texture_id
 51201	98	209	108	231	30
 51301	108	209	119	231	30
 
+#teeth
+
 #transparent block
 51001	250	150	266	166	20
 52002	250	150	266	166	20
