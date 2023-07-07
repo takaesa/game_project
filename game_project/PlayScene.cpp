@@ -17,6 +17,7 @@
 #include "Leaf.h"
 #include "Plain.h"
 #include "FireBullet.h"
+#include "HUD.h"
 
 using namespace std;
 
@@ -331,8 +332,8 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 	if (cy > 0) cy = 0;
-	else if (cy < 0 && cy > -32) cy = 0;
-	else cy += 50;
+	else if (cy < 0 && cy > -50) cy = 0;
+	else cy += 40;
 
 
 	CGame::GetInstance()->SetCamPos(cx, cy);
@@ -344,6 +345,13 @@ void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
+	float camX, camY;
+	CGame* game = CGame::GetInstance();
+	
+	game->GetCamPos(camX, camY);
+	CHUD* hud = new CHUD(camX + 150, camY + 280);
+	hud->Render();
 }
 
 /*

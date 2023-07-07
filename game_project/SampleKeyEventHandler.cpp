@@ -19,7 +19,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_S:
 		if (mario->GetFlyingState() == true)
 			mario->SetState(MARIO_STATE_FLY);
-		else if (mario->GetIsOnPlatform() == false)
+		else if (mario->GetIsOnPlatform() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
 			mario->SetState(MARIO_STATE_LANDING);
 		else
 			mario->SetState(MARIO_STATE_JUMP);
