@@ -21,6 +21,9 @@ void CHUD::Render() {
 	// HUD
 	CAnimations::GetInstance()->Get(ID_ANI_HUD)->Render(x + 40, y - 50);
 
+	CAnimations::GetInstance()->Get(ID_ANI_0)->Render(x + 40, y - 50);
+
+
 	//WRITE M SYMBOL
 	//CAnimations::GetInstance()->Get(ID_ANI_M_SYMBOL)->Render(x + POSITION_M_SYMBOL_X, y - ADJUST_Y_POWER_POSITION_UNDER - 1);
 
@@ -91,7 +94,7 @@ void CHUD::Render() {
 	/*}*/
 }
 void CHUD::DrawNumber(int n, float xTemp, float yTemp) {
-	/*if (n == 0) CAnimations::GetInstance()->Get(ID_ANI_0)->Render(xTemp, yTemp);
+	if (n == 0) CAnimations::GetInstance()->Get(ID_ANI_0)->Render(xTemp, yTemp);
 	else if (n == 1) CAnimations::GetInstance()->Get(ID_ANI_1)->Render(xTemp, yTemp);
 	else if (n == 2) CAnimations::GetInstance()->Get(ID_ANI_2)->Render(xTemp, yTemp);
 	else if (n == 3) CAnimations::GetInstance()->Get(ID_ANI_3)->Render(xTemp, yTemp);
@@ -100,7 +103,7 @@ void CHUD::DrawNumber(int n, float xTemp, float yTemp) {
 	else if (n == 6) CAnimations::GetInstance()->Get(ID_ANI_6)->Render(xTemp, yTemp);
 	else if (n == 7) CAnimations::GetInstance()->Get(ID_ANI_7)->Render(xTemp, yTemp);
 	else if (n == 8) CAnimations::GetInstance()->Get(ID_ANI_8)->Render(xTemp, yTemp);
-	else  CAnimations::GetInstance()->Get(ID_ANI_9)->Render(xTemp, yTemp);*/
+	else  CAnimations::GetInstance()->Get(ID_ANI_9)->Render(xTemp, yTemp);
 }
 
 void CHUD::DrawCard(int n, float xTemp, float yTemp) {

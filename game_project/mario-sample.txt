@@ -24,4 +24,5 @@ height	240
 35	textures\detailworld.png
 36	textures\black_background.png
 37	textures\HUD.png
+38	textures\hud_source.png
 40	textures\misc1.png
