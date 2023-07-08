@@ -16,6 +16,7 @@ CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 	this->ay = KOOPA_GRAVITY;
 	this->type = type;
 	shell_start = -1;
+	jump_start = -1;
 	SetState(KOOPA_STATE_WALKING);
 	
 }
@@ -65,17 +66,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (type == 2 && e->obj->GetState() != KOOPA_STATE_SHELL_MOVING)
 			vx = -vx;
 	}
-		
 
 	if (!e->obj->IsBlocking()) return;
-
-	if ((type == 1 || type == 3) && e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-		ay = -ay;
-		
-		if (e->ny < 0) isOnPlatform = true;
-	}
 
 	if (e->ny != 0)
 	{
@@ -84,6 +76,22 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	else if (e->nx != 0)
 	{
 		vx = -vx;
+	}
+
+	if (type == 1 && e->ny != 0 && e->obj->IsBlocking())
+	{
+		if (jumpable || e->ny >= 0)
+		{
+			vy = 0;
+			ay = -ay;
+			jumpable = false;
+		}
+
+		if (!isOnPlatform)
+		{
+			isOnPlatform = true;
+			jump_start = GetTickCount64();
+		}
 	}
 }
 
@@ -187,9 +195,12 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+
 	vy += ay * dt;
 	vx += ax * dt;
-	if (state == KOOPA_STATE_WALKING || state == KOOPA_STATE_WALKING+ 1){
+
+	if ((state == KOOPA_STATE_WALKING || state == KOOPA_STATE_WALKING+ 1) && type == 2 )
+	{
 		float FWx, FWy;
 		if (vx > 0)
 			fallwarning->SetPosition(this->x + KOOPA_BBOX_WIDTH, this->y - KOOPA_BBOX_HEIGHT);
@@ -203,13 +214,20 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vx = -vx;
 		}
 	}
-	if (type == 1 || type == 3)
+	if (type == 1)
 	{
 		if (vy <= -KOOPA_JUMP_SPEED)
 		{
 			vy = 0;
 			ay = -ay;
 		}
+	}
+	if (type == 1 && GetTickCount64() - jump_start > KOOPA_JUMP_TIMEOUT)
+	{
+		jumpable = true;
+		isOnPlatform = false;
+		ay = GOOMBA_GRAVITY;
+		jump_start = -1;
 	}
 	
 	if (isFlipped)
@@ -224,6 +242,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			minusY_flag = true;
 			y = y - (KOOPA_BBOX_HEIGHT - KOOPA_BBOX_HEIGHT_SHELL) / 2;
+			y -= 5;
 			SetState(KOOPA_STATE_WALKING);
 			this->ay = KOOPA_GRAVITY;
 			shell_start = -1;
@@ -244,7 +263,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			state = KOOPA_STATE_WALKING;
 	}		
 
-	isOnPlatform = false;
+	//isOnPlatform = false;
 	//ay = KOOPA_GRAVITY;
 
 	CGameObject::Update(dt, coObjects);
@@ -258,6 +277,18 @@ void CKoopa::Render()
 	/*fallwarning->RenderBoundingBox();*/
 	switch (type)
 	{
+	case 0:				//Normal Green
+		if (state == KOOPA_STATE_WALKING)
+			aniId = ID_ANI_KOOPA_NORMAL_GREEN_WALKING_LEFT;
+		else if (state == KOOPA_STATE_WALKING + 1)
+			aniId = ID_ANI_KOOPA_NORMAL_GREEN_WALKING_RIGHT;
+		break;
+	case 1:
+		if (state == KOOPA_STATE_WALKING)
+			aniId = ID_ANI_KOOPA_FLY_GREEN_WALKING_LEFT;
+		else if (state == KOOPA_STATE_WALKING + 1)
+			aniId = ID_ANI_KOOPA_FLY_GREEN_WALKING_RIGHT;
+		break;
 	case 2:				//Normal Red
 		if (state == KOOPA_STATE_WALKING)
 			aniId = ID_ANI_KOOPA_NORMAL_RED_WALKING_LEFT;
@@ -271,7 +302,17 @@ void CKoopa::Render()
 
 
 	//SHELL
-	
+	if (type == 0 || type == 1)
+	{
+		if (state == KOOPA_STATE_SHELL || state == KOOPA_STATE_CARRIED)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL;
+		else if (state == KOOPA_STATE_SHELL_MOVING)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_MOVING;
+		else if (state == KOOPA_STATE_AWAKE)
+			aniId = ID_ANI_KOOPA_GREEN_SHELL_AWAKE;
+
+		if (isFlipped)	aniId = ID_ANI_KOOPA_GREEN_SHELL_FLIPPED;
+	}
 	if (type == 2 || type == 3)
 	{
 		if (state == KOOPA_STATE_SHELL || state == KOOPA_STATE_CARRIED)
@@ -285,7 +326,7 @@ void CKoopa::Render()
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopa::SetState(int state)

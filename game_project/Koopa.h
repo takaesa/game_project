@@ -3,9 +3,11 @@
 #include "FallWarning.h"
 
 #define KOOPA_GRAVITY 0.0005f
-#define KOOPA_JUMP_SPEED	0.3f
+#define KOOPA_JUMP_SPEED	0.45f
 #define KOOPA_WALKING_SPEED 0.04f
 #define KOOPA_SHELL_MOVING_SPEED	0.2f
+#define KOOPA_JUMP_TIMEOUT 3000
+
 
 
 #define KOOPA_BBOX_WIDTH 16
@@ -24,6 +26,23 @@
 
 
 //ANIMATIONS
+// 
+// //Normal Green
+#define ID_ANI_KOOPA_NORMAL_GREEN_WALKING_LEFT 91100
+#define ID_ANI_KOOPA_NORMAL_GREEN_WALKING_RIGHT 91200
+
+#define ID_ANI_KOOPA_GREEN_SHELL	91300
+#define ID_ANI_KOOPA_GREEN_SHELL_AWAKE	91400
+
+#define ID_ANI_KOOPA_GREEN_SHELL_MOVING	91500
+
+#define ID_ANI_KOOPA_GREEN_SHELL_FLIPPED	91600
+
+//Fly Green
+#define ID_ANI_KOOPA_FLY_GREEN_WALKING_LEFT 92100
+#define ID_ANI_KOOPA_FLY_GREEN_WALKING_RIGHT 92200
+
+
 //Normal Red
 #define ID_ANI_KOOPA_NORMAL_RED_WALKING_LEFT 93100
 #define ID_ANI_KOOPA_NORMAL_RED_WALKING_RIGHT 93200
@@ -45,8 +64,11 @@ protected:
 	bool minusY_flag = true;
 	int dir = 1;	// 1: left, -1: right
 	bool isFlipped = false;
+	bool jumpable = true;
+
 
 	ULONGLONG shell_start;
+	ULONGLONG jump_start;
 	BOOLEAN isOnPlatform = false;
 
 	CFallWarning* fallwarning;
