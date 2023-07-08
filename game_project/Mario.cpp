@@ -15,6 +15,7 @@
 #include "Leaf.h"
 #include "MushRoom.h"
 #include "QuestionBrick.h"
+#include "Special_Button.h"
 #include "Plain.h"
 #include "FireBullet.h"
 #include "Koopa.h"
@@ -124,6 +125,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBullet(e);
 	else if (dynamic_cast<CKoopa*>(e->obj))
 		OnCollisionWithKoopa(e);
+	else if (dynamic_cast<CSpecial_Button*>(e->obj))
+		OnCollisionWithSpecialButton(e);
 }
 
 
@@ -307,6 +310,16 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 		SetLevel(MARIO_LEVEL_BIG);
 }
 
+void CMario::OnCollisionWithSpecialButton(LPCOLLISIONEVENT e)
+{
+	CSpecial_Button* special_button = dynamic_cast<CSpecial_Button*>(e->obj);
+	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+	if (e->ny < 0)
+	{
+		//vector<LPGAMEOBJECT> objects = thisscene->
+	}
+}
+
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
@@ -430,6 +443,21 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 				thisscene->AddObjectToScene(leaf);
 				thisscene->AddObjectToScene(newQuesttionBrick);
 			}
+		}
+		else if (questionbrick->GetBrickType() == 3) //special button (P)
+		{
+			questionbrick->SetEmpty(true);
+			float bx, by;
+			questionbrick->GetPosition(bx, by);
+
+			CSpecial_Button* special_button = new CSpecial_Button(bx, by - 2 * SPECIAL_P_WIDTH);
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+
+			thisscene->AddObjectToScene(special_button);
+
+			//special_button->SetFly(true);
+			questionbrick->SetPosition(bx, by);
+			special_button->SetPosition(bx, by - 15);
 		}
 	}
 }

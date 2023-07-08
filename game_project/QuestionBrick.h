@@ -5,6 +5,8 @@
 #include "Animations.h"
 
 #define ID_ANI_QUESTIONBRICK 12000
+#define ID_ANI_SPECIAL_QUESTIONBRICK 12010
+
 #define ID_ANI_EMPTY 12001
 
 #define QUESTIONBRICK_BBOX_WIDTH 16
@@ -21,7 +23,7 @@
 
 class CQuestionBrick : public CGameObject
 {
-	int brick_type; //0: coin , 1 mushroom, 2 leaf
+	int brick_type; //0: coin , 1 mushroom, 2 leaf, 3: special questionbrick
 	bool isEmpty = false;
 	float beforeHit_y;
 public:

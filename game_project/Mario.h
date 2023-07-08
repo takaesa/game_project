@@ -186,6 +186,7 @@ class CMario : public CGameObject
 	void OnCollisionWithPlain(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
+	void OnCollisionWithSpecialButton(LPCOLLISIONEVENT e);
 
 
 	int GetAniIdBig();
