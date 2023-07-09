@@ -1,20 +1,34 @@
 #include "Special_Button.h"
 #include "debug.h"
+#include"PlayScene.h"
 
 void CSpecial_Button::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
-	animations->Get(ID_ANI_SPECIAL_P)->Render(x, y);
-
-	//RenderBoundingBox();
+	if(pressable == true)
+		animations->Get(ID_ANI_SPECIAL_P)->Render(x, y);
+	else if(pressable == false)
+		animations->Get(ID_ANI_SPECIAL_P_PRESSED)->Render(x, y+5);
+	RenderBoundingBox();
 }
 
 void CSpecial_Button::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	l = x - SPECIAL_P_BBOX_WIDTH / 2;
-	t = y - SPECIAL_P_BBOX_HEIGHT / 2;
-	r = l + SPECIAL_P_BBOX_WIDTH;
-	b = t + SPECIAL_P_BBOX_HEIGHT;
+	if (state == SPECIAL_P_STATE_NORMAL)
+	{
+		l = x - SPECIAL_P_BBOX_WIDTH / 2;
+		t = y - SPECIAL_P_BBOX_HEIGHT / 2;
+		r = l + SPECIAL_P_BBOX_WIDTH;
+		b = t + SPECIAL_P_BBOX_HEIGHT;
+	}
+	
+	if (state == SPECIAL_P_STATE_PRESSED)
+	{
+		l = x - SPECIAL_P_PRESSED_BBOX_WIDTH / 2;
+		t = y - SPECIAL_P_PRESSED_BBOX_HEIGHT / 2;
+		r = l + SPECIAL_P_PRESSED_BBOX_WIDTH;
+		b = t + SPECIAL_P_PRESSED_BBOX_HEIGHT;
+	}
 }
 
 void CSpecial_Button::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -34,4 +48,26 @@ void CSpecial_Button::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CSpecial_Button::SetState(int state)
+{
+	CGameObject::SetState(state);
+	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+	switch (state)
+	{
+	case SPECIAL_P_STATE_PRESSED:
+	{
+		stop_changing = GetTickCount64();
+		vector<LPGAMEOBJECT> objects = thisscene->GetListObjects();
+		for (int  i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<CBrick*>(objects[i]))
+			{
+				if (objects[i]->GetState() == BRICK_STATE_BLINK)
+					objects[i]->SetState(BRICK_STATE_GOLD);
+			}
+		}
+	}
+	}
 }

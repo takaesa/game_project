@@ -9,6 +9,7 @@
 #include "FallWarning.h"
 #include "Mario.h"
 #include "PlayScene.h"
+#include "Special_Button.h"
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
 	fallwarning = new CFallWarning( x,  y);
@@ -129,7 +130,7 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 
 	if (state != KOOPA_STATE_SHELL_MOVING) return;
 	
-	if (e->nx < 0 && state == KOOPA_STATE_SHELL_MOVING)
+	if ((e->nx < 0  || e->nx > 0 )&& state == KOOPA_STATE_SHELL_MOVING)
 	{
 		if (qbrick->GetBrickType() == 1)		//Mushroom
 		{
@@ -189,6 +190,21 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 				thisscene->AddObjectToScene(newQuesttionBrick);
 			}
 
+		}
+		else if (qbrick->GetBrickType() == 3) //special button (P)
+		{
+			qbrick->SetEmpty(true);
+			float bx, by;
+			qbrick->GetPosition(bx, by);
+
+			CSpecial_Button* special_button = new CSpecial_Button(bx, by - 15);
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+
+			thisscene->AddObjectToScene(special_button);
+
+			//special_button->SetFly(true);
+			qbrick->SetPosition(bx, by);
+			special_button->SetPosition(bx, by - 15);
 		}
 	}
 }

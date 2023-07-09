@@ -36,7 +36,7 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
-
+	vector<LPGAMEOBJECT> GetListObjects() { return objects; }
 	void Clear();
 	void PurgeDeletedObjects();
 

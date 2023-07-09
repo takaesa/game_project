@@ -7,9 +7,11 @@
 void CQuestionBrick::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
-	if(this->isEmpty == false)
+	if (this->isEmpty == false && (brick_type!=3))
 		animations->Get(ID_ANI_QUESTIONBRICK)->Render(x, y);
-	else
+	else if (this->isEmpty == false && brick_type == 3)
+		animations->Get(ID_ANI_SPECIAL_QUESTIONBRICK)->Render(x, y);
+	else if(this->isEmpty == true)
 		animations->Get(ID_ANI_EMPTY)->Render(x, y);
 }
 

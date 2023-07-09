@@ -100,4 +100,7 @@ public:
 	virtual void SetDir(int dir) { this->dir = dir; }
 	virtual bool GetStateFlipped() { return isFlipped; }
 	virtual void SetStateFlipped(bool state) { isFlipped = state; }
+	virtual void Set_ay(float AY) {
+		this->ay = AY;
+	}
 };

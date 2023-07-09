@@ -185,7 +185,9 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		if (koopa->GetType() == 1)
 		{
 			koopa->SetType(0);
+			koopa->Set_ay(MARIO_GRAVITY);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			koopa->SetPosition(koox, kooy - 5);
 		}
 		else if (koopa->GetState() != KOOPA_STATE_SHELL && koopa->GetType() != 1)// When Koopa is in turtle form
 		{
@@ -313,10 +315,13 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithSpecialButton(LPCOLLISIONEVENT e)
 {
 	CSpecial_Button* special_button = dynamic_cast<CSpecial_Button*>(e->obj);
-	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-	if (e->ny < 0)
+	//LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+
+	if (e->ny < 0 && special_button->GetPressable() == true)
 	{
-		//vector<LPGAMEOBJECT> objects = thisscene->
+		special_button->SetPressable(false);
+		special_button->SetState(SPECIAL_P_STATE_PRESSED);
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
 	}
 }
 
@@ -444,21 +449,21 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 				thisscene->AddObjectToScene(newQuesttionBrick);
 			}
 		}
-		else if (questionbrick->GetBrickType() == 3) //special button (P)
-		{
-			questionbrick->SetEmpty(true);
-			float bx, by;
-			questionbrick->GetPosition(bx, by);
+		//else if (questionbrick->GetBrickType() == 3) //special button (P)
+		//{
+		//	questionbrick->SetEmpty(true);
+		//	float bx, by;
+		//	questionbrick->GetPosition(bx, by);
 
-			CSpecial_Button* special_button = new CSpecial_Button(bx, by - 2 * SPECIAL_P_WIDTH);
-			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		//	CSpecial_Button* special_button = new CSpecial_Button(bx, by - 15);
+		//	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 
-			thisscene->AddObjectToScene(special_button);
+		//	thisscene->AddObjectToScene(special_button);
 
-			//special_button->SetFly(true);
-			questionbrick->SetPosition(bx, by);
-			special_button->SetPosition(bx, by - 15);
-		}
+		//	//special_button->SetFly(true);
+		//	questionbrick->SetPosition(bx, by);
+		//	special_button->SetPosition(bx, by - 15);
+		//}
 	}
 }
 
