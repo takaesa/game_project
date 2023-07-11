@@ -56,7 +56,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		flyable = false;
 		flyable_start = -1;
 	}
-	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
+	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
@@ -615,14 +615,24 @@ int CMario::GetAniIdSmall()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				if (isCarrying == false)
+				{
+					if (nx > 0) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
+					else aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				}
+				else
+				{
+					if (nx > 0) aniId = ID_ANI_MARIO_SMALL_CARRY_RIGHT_IDLE;
+					else aniId = ID_ANI_MARIO_SMALL_CARRY_LEFT_IDLE;
+				}
 			}
 			else if (vx > 0)
 			{
 				if (ax < 0)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (ax == MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_SMALL_CARRY_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X && vx == maxVx)
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
 				else if (ax == MARIO_ACCEL_WALK_X || vx != maxVx)
 				{
@@ -636,7 +646,9 @@ int CMario::GetAniIdSmall()
 			{
 				if (ax > 0)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (ax == -MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_SMALL_CARRY_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X && abs(vx) == abs(maxVx))
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
 				else if (ax == -MARIO_ACCEL_WALK_X || vx != -maxVx)
 				{
@@ -701,14 +713,24 @@ int CMario::GetAniIdBig()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_IDLE_LEFT;
+				if (isCarrying == false)
+				{
+					if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT;
+					else aniId = ID_ANI_MARIO_IDLE_LEFT;
+				}
+				else
+				{
+					if (nx > 0) aniId = ID_ANI_MARIO_CARRY_RIGHT_IDLE;
+					else aniId = ID_ANI_MARIO_CARRY_LEFT_IDLE;
+				}
 			}
 			else if (vx > 0)
 			{
 				if (ax < 0)
 					aniId = ID_ANI_MARIO_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (ax == MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_CARRY_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X && vx == maxVx)
 					aniId = ID_ANI_MARIO_RUNNING_RIGHT;
 				else if (ax == MARIO_ACCEL_WALK_X || vx != maxVx)
 				{
@@ -722,7 +744,9 @@ int CMario::GetAniIdBig()
 			{
 				if (ax > 0)
 					aniId = ID_ANI_MARIO_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (ax == -MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_CARRY_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X && abs(vx) == abs(maxVx))
 					aniId = ID_ANI_MARIO_RUNNING_LEFT;
 				else if (ax == -MARIO_ACCEL_WALK_X || vx != -maxVx)
 				{
@@ -808,7 +832,9 @@ int CMario::GetAniIdTail()
 				}
 				else if (ax < 0)
 					aniId = ID_ANI_MARIO_TAIL_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (ax == MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_TAIL_CARRY_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X && vx == maxVx)
 					aniId = ID_ANI_MARIO_TAIL_RUNNING_RIGHT;
 				else if (ax == MARIO_ACCEL_WALK_X || vx != maxVx)
 				{
@@ -827,7 +853,9 @@ int CMario::GetAniIdTail()
 				}
 				else if (ax > 0)
 					aniId = ID_ANI_MARIO_TAIL_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (ax == -MARIO_ACCEL_RUN_X && isCarrying == true)
+					aniId = ID_ANI_MARIO_TAIL_CARRY_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X && abs(vx) == abs(maxVx))
 					aniId = ID_ANI_MARIO_TAIL_RUNNING_LEFT;
 				else if (ax == -MARIO_ACCEL_WALK_X || vx != -maxVx)
 				{
@@ -869,7 +897,7 @@ void CMario::Render()
 			animations->Get(aniId)->Render(x, y);
 		}
 	}
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	
 	DebugOutTitle(L"Coins: %d", coin);
 }
