@@ -140,6 +140,7 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ColorBlock.h" />
+    <ClInclude Include="DeadBlock.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="FallWarning.h" />
     <ClInclude Include="FireBullet.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ColorBlock.cpp" />
+    <ClCompile Include="DeadBlock.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="FallWarning.cpp" />
     <ClCompile Include="FireBullet.cpp" />

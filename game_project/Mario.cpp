@@ -19,6 +19,7 @@
 #include "Plain.h"
 #include "FireBullet.h"
 #include "Koopa.h"
+#include "DeadBlock.h"
 
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -127,9 +128,20 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CSpecial_Button*>(e->obj))
 		OnCollisionWithSpecialButton(e);
+	else if (dynamic_cast<CDeadBlock*>(e->obj))
+		OnCollisionWithDeadBlock(e);
 }
 
+void CMario::OnCollisionWithDeadBlock(LPCOLLISIONEVENT e)
+{
+	CDeadBlock* deadblock = dynamic_cast<CDeadBlock*>(e->obj);
 
+	if (e->ny < 0)
+	{
+		DebugOut(L">>> Mario DIE >>> \n");
+		SetState(MARIO_STATE_DIE);
+	}
+}
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -358,6 +370,7 @@ void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 		break;
 	}
 }
+
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
 	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
