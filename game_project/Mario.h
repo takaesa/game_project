@@ -16,6 +16,7 @@
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
 
 #define MARIO_GRAVITY			0.002f
+#define MARIO_ATTACK_ZONE 8
 
 #define MARIO_JUMP_DEFLECT_SPEED  0.4f
 
@@ -28,6 +29,9 @@
 #define MARIO_STATE_RELEASE_JUMP    301
 #define MARIO_STATE_FLY				302
 #define MARIO_LANDING_SPEED	0.03f
+#define MARIO_KICKABLE_TIME 100
+
+#define MARIO_STATE_HIT 1200
 
 
 #define MARIO_STATE_RUNNING_RIGHT	400
@@ -68,8 +72,8 @@
 
 #define ID_ANI_MARIO_DIE 999
 
-#define ID_ANI_MARIO_KICK_RIGHT 200
-#define ID_ANI_MARIO_KICK_LEFT	2001
+#define ID_ANI_MARIO_KICK_RIGHT 220
+#define ID_ANI_MARIO_KICK_LEFT	221
 
 // SMALL MARIO
 #define ID_ANI_MARIO_SMALL_IDLE_RIGHT 1100
@@ -120,6 +124,11 @@
 #define ID_ANI_TAIL_LANDING_RIGHT	27000
 #define ID_ANI_TAIL_LANDING_LEFT	27001
 
+#define ID_ANI_TAIL_HIT_RIGHT	330000
+#define ID_ANI_TAIL_HIT_LEFT	330001
+
+#define ID_ANI_TAIL_CARRY_RIGHT_IDLE	310000
+#define ID_ANI_TAIL_CARRY_LEFT_IDLE	310001
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -162,6 +171,9 @@ class CMario : public CGameObject
 	bool flyable = false;
 	bool isChanging = false;
 
+	int live;
+	int bonusItem[3] = { -1, -1, -1 };
+
 	ULONGLONG untouchable_start;
 	ULONGLONG kickable_start;
 	ULONGLONG hittable_start;
@@ -173,7 +185,8 @@ class CMario : public CGameObject
 	bool isCarryingObject = false;
 	bool isFlying = false;
 	BOOLEAN isOnPlatform;
-	int coin; 
+	int coin;
+	int score;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -202,6 +215,7 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
+		live = 4;
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		kickable = 0;
@@ -214,6 +228,8 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		score = 0;
+
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -221,10 +237,6 @@ public:
 	void SetKickable(int kick)
 	{
 		this->kickable = kick;
-	}
-	int GetLevel()
-	{
-		return level;
 	}
 
 	int IsCollidable()
@@ -237,8 +249,8 @@ public:
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
-	void SetLevel(int l)
-		;
+	void SetLevel(int l);
+	int GetLevel() { return level; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
