@@ -194,6 +194,8 @@ class CMario : public CGameObject
 	ULONGLONG hittable_start;
 	ULONGLONG change_start;
 	ULONGLONG flyable_start;
+	ULONGLONG henshin_start;
+
 
 	CKoopa* shell = NULL;
 	bool isCarrying = false;
@@ -239,6 +241,8 @@ public:
 		hittable_start = -1;
 		change_start = -1;
 		flyable_start = -1;
+		henshin_start = -1;
+
 
 		untouchable_start = -1;
 		isOnPlatform = false;
