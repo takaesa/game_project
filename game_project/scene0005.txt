@@ -13,6 +13,7 @@ firebullet.txt
 Koopa.txt
 goomba.txt
 effect.txt
+hud.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

@@ -11,21 +11,23 @@ CHUD::CHUD(float x, float y) {
 
 }
 
-void CHUD::Render() {
+void CHUD::Render()
+{
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
-	//CAnimations::GetInstance()->Get(ID_ANI_BLACK_RECTANGEL)->Render(x, y);
+	CAnimations::GetInstance()->Get(ID_ANI_BLACK_RECTANGEL)->Render(x, y);
 
 	//background
 	CAnimations::GetInstance()->Get(ID_ANI_BLACK_BACKGROUND)->Render(x, y-2);
+
 	// HUD
 	CAnimations::GetInstance()->Get(ID_ANI_HUD)->Render(x + 40, y - 50);
 
-	CAnimations::GetInstance()->Get(ID_ANI_0)->Render(x + 40, y - 50);
-
+	// WRITE WORLD
+	DrawNumber(1, x + POSITION_WORLD_X, y - ADJUST_Y_POWER_POSITION);
 
 	//WRITE M SYMBOL
-	//CAnimations::GetInstance()->Get(ID_ANI_M_SYMBOL)->Render(x + POSITION_M_SYMBOL_X, y - ADJUST_Y_POWER_POSITION_UNDER - 1);
+	CAnimations::GetInstance()->Get(ID_ANI_M_SYMBOL)->Render(x + POSITION_M_SYMBOL_X, y - ADJUST_Y_POWER_POSITION_UNDER - 1);
 
 	//if (!mario) {}
 	//else {

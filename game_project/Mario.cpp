@@ -174,6 +174,9 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
+	float goox, gooy;
+	goomba->GetPosition(goox, gooy);
+
 	// jump on top >> kill Goomba and deflect a bit 
 	if (e->ny < 0)
 	{
@@ -189,7 +192,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			goomba->SetState(GOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-			CEffect* effect = new CEffect(x + 10, y, 2000);
+			CEffect* effect = new CEffect(goox , gooy, 2000);
 			thisscene->AddObjectToScene(effect);
 			score += 2000;
 		}
@@ -238,11 +241,16 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			koopa->Set_ay(MARIO_GRAVITY);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 			koopa->SetPosition(koox, kooy - 5);
+			
 		}
 		else if (koopa->GetState() != KOOPA_STATE_SHELL && koopa->GetType() != 1)// When Koopa is in turtle form
 		{
 			koopa->SetState(KOOPA_STATE_SHELL);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			CEffect* effect = new CEffect(koox, kooy, 4000);
+			thisscene->AddObjectToScene(effect);
+			score += 4000;
 		}
 		else if (koopa->GetState() == KOOPA_STATE_SHELL)// When Koopa is in shell form
 		{
@@ -277,11 +285,19 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			{
 				koopa->SetStateFlipped(true);
 				koopa->SetState(KOOPA_STATE_SHELL);
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+				CEffect* effect = new CEffect(koox, kooy, 4000);
+				thisscene->AddObjectToScene(effect);
+				score += 4000;
 			}
 			else if (e->nx > 0 && nx < 0)
 			{
 				koopa->SetStateFlipped(true);
 				koopa->SetState(KOOPA_STATE_SHELL);
+				LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+				CEffect* effect = new CEffect(koox, kooy, 4000);
+				thisscene->AddObjectToScene(effect);
+				score += 4000;
 			}
 			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 			/*CEffect* effect = new CEffect(x + 10, y, KOOPA_SCORE);
@@ -341,9 +357,12 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
+	CCoin* newcoin = dynamic_cast<CCoin*>(e->obj);
+	float cx, cy;
+	newcoin->GetPosition(cx, cy);
 	e->obj->Delete();
 	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-	CEffect* effect = new CEffect(x + 10, y, 100);
+	CEffect* effect = new CEffect(cx , cy, 100);
 	thisscene->AddObjectToScene(effect);
 	coin++;
 }
@@ -351,13 +370,14 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
 	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
-
+	float lx, ly;
+	leaf->GetPosition(lx, ly);
 	if (level == MARIO_LEVEL_BIG)
 	{
 		y = y - Push_Up_Platform * 2;
 		//henshin_start = GetTickCount64();
 		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		CEffect* effect = new CEffect(x + 10, y, 4000);
+		CEffect* effect = new CEffect(lx , ly, 4000);
 		CEffect* henshin = new CEffect(x, y-5, 0);
 		thisscene->AddObjectToScene(effect);
 		//thisscene->AddObjectToScene(henshin);
@@ -368,7 +388,7 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 		y = y - Push_Up_Platform * 2;
 		//henshin_start = GetTickCount64();
 		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		CEffect* effect = new CEffect(x + 10, y, 4000);
+		CEffect* effect = new CEffect(lx, ly, 4000);
 		CEffect* henshin = new CEffect(x, y - 5, 0);
 		thisscene->AddObjectToScene(effect);
 		//thisscene->AddObjectToScene(henshin);
@@ -380,15 +400,17 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
 	CMushRoom* objmushroom = dynamic_cast<CMushRoom*>(e->obj);
+	float mx, my;
+	objmushroom->GetPosition(mx, my);
 	e->obj->Delete();
 	y = y - Push_Up_Platform * 2;
 	if (level == MARIO_LEVEL_SMALL)
 	{
 		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		CEffect* effect = new CEffect(x + 10, y, 2000);
+		CEffect* effect = new CEffect(mx, my, 2000);
 		CEffect* henshin = new CEffect(x + 10, y, 0);
 		thisscene->AddObjectToScene(effect);
-		thisscene->AddObjectToScene(henshin);
+		//thisscene->AddObjectToScene(henshin);
 		SetLevel(MARIO_LEVEL_BIG);
 	}
 }

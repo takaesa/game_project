@@ -192,6 +192,14 @@ class CMario : public CGameObject
 	bool flyable = false;
 	bool isChanging = false;
 
+	int card1;
+	int card2;
+	int card3;
+	int Up;
+	int clock;
+
+
+
 	int live;
 	int bonusItem[3] = { -1, -1, -1 };
 
@@ -254,6 +262,7 @@ public:
 		isOnPlatform = false;
 		coin = 0;
 		score = 0;
+
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -272,6 +281,14 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
+
+	int GetScore() { return score; }
+	int GetCard1() { return card1; }
+	int GetCard2() { return card2; }
+	int GetCard3() { return card3; }
+	int GetUp() { return Up; }
+	int GetCoin() { return this->coin; }
+	int GetClock() { return clock; }
 
 	void SetLevel(int l);
 	int GetLevel() { return level; }

@@ -28,3 +28,5 @@ height	240
 38	textures\hud_source.png
 39	textures\hud1.png
 40	textures\misc1.png
+41	textures\gameover.png
+42	textures\dialogs.png
