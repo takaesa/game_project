@@ -11,6 +11,7 @@
 #include "PlayScene.h"
 #include "Special_Button.h"
 #include "Plain.h"
+#include "Effect.h"
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
 	fallwarning = new CFallWarning( x,  y);
@@ -99,7 +100,6 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		}
 		if (isOnPlatform)
 		{
-			isOnPlatform = true;
 			reset_start = GetTickCount64();
 		}
 	}
@@ -134,10 +134,14 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 void CKoopa::OnCollisionWithPlain(LPCOLLISIONEVENT e)
 {
 	CPlain* plain = dynamic_cast<CPlain*>(e->obj);
-
+	float px, py;
+	plain->GetPosition(px, py);
 	if (state == KOOPA_STATE_SHELL_MOVING)
 	{
 		plain->Delete();
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* effect = new CEffect(px, py, 0);
+		thisscene->AddObjectToScene(effect);
 	}
 }
 

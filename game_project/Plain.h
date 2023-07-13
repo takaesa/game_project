@@ -25,6 +25,7 @@
 
 #define PLAIN_STATE_SHOOTING	100
 #define PLAIN_STATE_BITING	200
+#define PLAIN_STATE_DIE 101
 
 class CPlain : public CGameObject
 {

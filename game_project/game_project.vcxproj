@@ -142,6 +142,7 @@
     <ClInclude Include="ColorBlock.h" />
     <ClInclude Include="DeadBlock.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="FallWarning.h" />
     <ClInclude Include="FireBullet.h" />
     <ClInclude Include="Game.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="ColorBlock.cpp" />
     <ClCompile Include="DeadBlock.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="FallWarning.cpp" />
     <ClCompile Include="FireBullet.cpp" />
     <ClCompile Include="Game.cpp" />
