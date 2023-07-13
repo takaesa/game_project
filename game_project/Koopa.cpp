@@ -10,6 +10,7 @@
 #include "Mario.h"
 #include "PlayScene.h"
 #include "Special_Button.h"
+#include "Plain.h"
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
 	fallwarning = new CFallWarning( x,  y);
@@ -18,6 +19,7 @@ CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 	this->type = type;
 	shell_start = -1;
 	jump_start = -1;
+	reset_start = -1;
 	SetState(KOOPA_STATE_WALKING);
 	
 }
@@ -60,6 +62,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CKoopa*>(e->obj))
 		OnCollisionWithKoopa(e);
+	else if (dynamic_cast<CPlain*>(e->obj))
+		OnCollisionWithPlain(e);
 	else if (dynamic_cast<CQuestionBrick*>(e->obj))
 		OnCollisionWithQuestionBrick(e);
 	else if (dynamic_cast<CTransparentBlock*>(e->obj))
@@ -93,6 +97,11 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 			isOnPlatform = true;
 			jump_start = GetTickCount64();
 		}
+		if (isOnPlatform)
+		{
+			isOnPlatform = true;
+			reset_start = GetTickCount64();
+		}
 	}
 }
 
@@ -119,6 +128,16 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	if (state == KOOPA_STATE_SHELL_MOVING)
 	{
 		koopa->SetStateFlipped(true);
+	}
+}
+
+void CKoopa::OnCollisionWithPlain(LPCOLLISIONEVENT e)
+{
+	CPlain* plain = dynamic_cast<CPlain*>(e->obj);
+
+	if (state == KOOPA_STATE_SHELL_MOVING)
+	{
+		plain->Delete();
 	}
 }
 
@@ -211,7 +230,6 @@ void CKoopa::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-
 	vy += ay * dt;
 	vx += ax * dt;
 
@@ -230,6 +248,11 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vx = -vx;
 		}
 	}
+	if (type == 1 && (GetTickCount64() - reset_start > KOOPA_RESET_TIMEOUT))
+	{
+		SetPosition(1484, 141);
+		reset_start = -1;
+	}
 	if (type == 1)
 	{
 		if (vy <= -KOOPA_JUMP_SPEED)
@@ -245,6 +268,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ay = GOOMBA_GRAVITY;
 		jump_start = -1;
 	}
+	
 	
 	if (isFlipped)
 	{

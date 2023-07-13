@@ -16,6 +16,7 @@
 
 #define KOOPA_SHELL_AWAKE	4000
 #define KOOPA_SHELL_TIMEOUT 6000
+#define KOOPA_RESET_TIMEOUT 1000
 
 #define KOOPA_STATE_WALKING 100		// 100: left, 101: right
 
@@ -69,6 +70,7 @@ protected:
 
 	ULONGLONG shell_start;
 	ULONGLONG jump_start;
+	ULONGLONG reset_start;
 	BOOLEAN isOnPlatform = false;
 
 	CFallWarning* fallwarning;
@@ -90,6 +92,7 @@ protected:
 	virtual void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithPlain(LPCOLLISIONEVENT e);
 	//virtual void OnCollisionWithTransparentBlock(LPCOLLISIONEVENT e);
 	
 public:
