@@ -141,7 +141,9 @@ void CKoopa::OnCollisionWithPlain(LPCOLLISIONEVENT e)
 		plain->Delete();
 		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 		CEffect* effect = new CEffect(px, py, 0);
+		CEffect* score = new CEffect(px, py, 8000);
 		thisscene->AddObjectToScene(effect);
+		thisscene->AddObjectToScene(score);
 	}
 }
 

@@ -342,6 +342,9 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
+	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+	CEffect* effect = new CEffect(x + 10, y, 100);
+	thisscene->AddObjectToScene(effect);
 	coin++;
 }
 
@@ -352,11 +355,24 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	if (level == MARIO_LEVEL_BIG)
 	{
 		y = y - Push_Up_Platform * 2;
-		henshin_start = GetTickCount64();
+		//henshin_start = GetTickCount64();
 		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		CEffect* effect = new CEffect(x + 10, y, 0);
+		CEffect* effect = new CEffect(x + 10, y, 4000);
+		CEffect* henshin = new CEffect(x, y-5, 0);
 		thisscene->AddObjectToScene(effect);
+		//thisscene->AddObjectToScene(henshin);
 		SetLevel(MARIO_LEVEL_TAIL);
+	}
+	else if (level == MARIO_LEVEL_SMALL)
+	{
+		y = y - Push_Up_Platform * 2;
+		//henshin_start = GetTickCount64();
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* effect = new CEffect(x + 10, y, 4000);
+		CEffect* henshin = new CEffect(x, y - 5, 0);
+		thisscene->AddObjectToScene(effect);
+		//thisscene->AddObjectToScene(henshin);
+		SetLevel(MARIO_LEVEL_BIG);
 	}
 	leaf->Delete();
 }
@@ -367,7 +383,14 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 	e->obj->Delete();
 	y = y - Push_Up_Platform * 2;
 	if (level == MARIO_LEVEL_SMALL)
+	{
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* effect = new CEffect(x + 10, y, 2000);
+		CEffect* henshin = new CEffect(x + 10, y, 0);
+		thisscene->AddObjectToScene(effect);
+		thisscene->AddObjectToScene(henshin);
 		SetLevel(MARIO_LEVEL_BIG);
+	}
 }
 
 void CMario::OnCollisionWithSpecialButton(LPCOLLISIONEVENT e)
@@ -472,6 +495,8 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			coin->SetFly(true);
 			questionbrick->SetPosition(bx, by);
 
+			CEffect* effect = new CEffect(bx, by, 100);
+			thisscene->AddObjectToScene(effect);
 			coin++;
 			
 			/*CGame::GetInstance()->GetCurrentScene()->SetCoin(coin);*/
@@ -789,6 +814,13 @@ int CMario::GetAniIdBig()
 					}
 				}
 	}
+	else
+	{
+		if (nx > 0)
+			aniId = ID_ANI_MARIO_SMALL_CHANGE_TO_MARIO_BIG_RIGHT;
+		else
+			aniId = ID_ANI_MARIO_SMALL_CHANGE_TO_MARIO_BIG_LEFT;
+	}
 	
 	if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT;
 
@@ -900,6 +932,13 @@ int CMario::GetAniIdTail()
 							aniId = ID_ANI_MARIO_TAIL_WALKING_LEFT;
 					}
 				}
+	}
+	else
+	{
+		if (nx > 0)
+			aniId = ID_ANI_MARIO_BIG_CHANGE_TO_MARIO_TAIL_RIGHT;
+		else
+			aniId = ID_ANI_MARIO_BIG_CHANGE_TO_MARIO_TAIL_LEFT;
 	}
 	
 	if (aniId == -1) aniId = ID_ANI_MARIO_TAIL_IDLE_RIGHT;
