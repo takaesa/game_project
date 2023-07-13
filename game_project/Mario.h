@@ -244,7 +244,6 @@ public:
 		isOnPlatform = false;
 		coin = 0;
 		score = 0;
-
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();

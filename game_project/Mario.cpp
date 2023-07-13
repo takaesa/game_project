@@ -20,7 +20,7 @@
 #include "FireBullet.h"
 #include "Koopa.h"
 #include "DeadBlock.h"
-
+#include "Effect.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -173,7 +173,10 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
-
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			CEffect* effect = new CEffect(x + 10, y, 2000);
+			thisscene->AddObjectToScene(effect);
+			score += 2000;
 		}
 	}
 	else // hit by Goomba
@@ -265,6 +268,11 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				koopa->SetStateFlipped(true);
 				koopa->SetState(KOOPA_STATE_SHELL);
 			}
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			/*CEffect* effect = new CEffect(x + 10, y, KOOPA_SCORE);
+			thisscene->AddObjectToScene(effect);
+			score += KOOPA_SCORE;*/
+
 		}
 		else if (koopa->GetState() == KOOPA_STATE_SHELL || koopa->GetState() == KOOPA_STATE_SHELL + 1 || koopa->GetState() == KOOPA_STATE_CARRIED)
 		{
@@ -905,7 +913,13 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE) return; 
+	if (this->state == MARIO_STATE_DIE && live > 0)
+	{
+		SetPosition(15, 150);
+		live--;
+		level = MARIO_LEVEL_SMALL;
+	}
+	else if (this->state == MARIO_STATE_DIE && live == 0) return; 
 
 	switch (state)
 	{
