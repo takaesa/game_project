@@ -22,6 +22,7 @@
 #include "DeadBlock.h"
 #include "Effect.h"
 #include "TeleportPipe.h"
+#include "Node.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {

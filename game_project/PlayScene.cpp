@@ -20,7 +20,7 @@
 #include "HUD.h"
 #include "DeadBlock.h"
 #include "TeleportPipe.h"
-
+#include "Node.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
