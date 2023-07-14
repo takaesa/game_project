@@ -154,7 +154,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-	case OBJECT_TYPE_MUSHROOM: obj = new CMushRoom(x, y); break;
+	case OBJECT_TYPE_MUSHROOM:
+	{
+		int mushroom_type = (int)atoi(tokens[3].c_str());
+		obj = new CMushRoom(x, y, mushroom_type);
+		break;
+	}
 	case OBJECT_TYPE_LEAF: obj = new CLeaf(x, y); break;
 	case OBJECT_TYPE_PIPE_TELE:
 	{

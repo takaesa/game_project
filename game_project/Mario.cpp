@@ -432,6 +432,15 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 		//thisscene->AddObjectToScene(henshin);
 		SetLevel(MARIO_LEVEL_BIG);
 	}
+	else if (level == MARIO_LEVEL_TAIL)
+	{
+		//henshin_start = GetTickCount64();
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* effect = new CEffect(lx, ly, 4000);
+		CEffect* henshin = new CEffect(x, y - 5, 0);
+		thisscene->AddObjectToScene(effect);
+		//thisscene->AddObjectToScene(henshin);
+	}
 	leaf->Delete();
 }
 
@@ -440,17 +449,28 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 	CMushRoom* objmushroom = dynamic_cast<CMushRoom*>(e->obj);
 	float mx, my;
 	objmushroom->GetPosition(mx, my);
-	e->obj->Delete();
 	y = y - Push_Up_Platform * 2;
-	if (level == MARIO_LEVEL_SMALL)
+	if (objmushroom->Gettype() == 0)
 	{
-		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
-		CEffect* effect = new CEffect(mx, my, 2000);
-		CEffect* henshin = new CEffect(x + 10, y, 0);
-		thisscene->AddObjectToScene(effect);
-		//thisscene->AddObjectToScene(henshin);
-		SetLevel(MARIO_LEVEL_BIG);
+		if (level == MARIO_LEVEL_SMALL)
+		{
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			CEffect* effect = new CEffect(mx, my, 2000);
+			CEffect* henshin = new CEffect(x + 10, y, 0);
+			thisscene->AddObjectToScene(effect);
+			//thisscene->AddObjectToScene(henshin);
+			SetLevel(MARIO_LEVEL_BIG);
+		}
 	}
+	else if (objmushroom->Gettype() == 1)
+	{
+		live++;
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* effect = new CEffect(mx, my, 2);
+		thisscene->AddObjectToScene(effect);
+	}
+	e->obj->Delete();
+
 }
 
 void CMario::OnCollisionWithSpecialButton(LPCOLLISIONEVENT e)
@@ -574,7 +594,7 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 			questionbrick->Delete();
 			newQuestionBrick->SetPosition(bx, by);
 
-			CMushRoom* mushroom = new CMushRoom(bx, by-32);
+			CMushRoom* mushroom = new CMushRoom(bx, by-32, 0);
 			newQuestionBrick->SetEmpty(true);
 
 			thisscene->AddObjectToScene(mushroom);
@@ -619,27 +639,32 @@ void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 				thisscene->AddObjectToScene(newQuesttionBrick);
 			}
 		}
-		//else if (questionbrick->GetBrickType() == 3) //special button (P)
-		//{
-		//	questionbrick->SetEmpty(true);
-		//	float bx, by;
-		//	questionbrick->GetPosition(bx, by);
+		else if (questionbrick->GetBrickType() == 4)		//LIFE_UP
+		{
+			questionbrick->SetEmpty(true);
+			float bx, by;
+			questionbrick->GetPosition(bx, by);
 
-		//	CSpecial_Button* special_button = new CSpecial_Button(bx, by - 15);
-		//	LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+			CQuestionBrick* newQuestionBrick = new CQuestionBrick(bx, by, 0);
+			LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
 
-		//	thisscene->AddObjectToScene(special_button);
+			questionbrick->Delete();
+			newQuestionBrick->SetPosition(bx, by);
 
-		//	//special_button->SetFly(true);
-		//	questionbrick->SetPosition(bx, by);
-		//	special_button->SetPosition(bx, by - 15);
-		//}
+			CMushRoom* mushroom = new CMushRoom(bx, by - 32, 1);
+			newQuestionBrick->SetEmpty(true);
+
+			thisscene->AddObjectToScene(mushroom);
+			thisscene->AddObjectToScene(newQuestionBrick);
+		}
 	}
 }
 
 void CMario::OnCollisionWithPlain(LPCOLLISIONEVENT e)
 {
 	CPlain* objplain = dynamic_cast<CPlain*>(e->obj);
+	float px, py;
+	objplain->GetPosition(px, py);
 
 	if (hittable == 1)
 	{
@@ -651,6 +676,12 @@ void CMario::OnCollisionWithPlain(LPCOLLISIONEVENT e)
 		{
 			objplain->Delete();
 		}
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		CEffect* score = new CEffect(px, py, 4000);
+		CEffect* effect = new CEffect(px, py, 0);
+		thisscene->AddObjectToScene(effect);
+		thisscene->AddObjectToScene(score);
+		score += 4000;
 	}
 	else if (untouchable == 0)
 	{
