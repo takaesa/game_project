@@ -21,6 +21,7 @@
 #include "Koopa.h"
 #include "DeadBlock.h"
 #include "Effect.h"
+#include "TeleportPipe.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -58,6 +59,33 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		hittable = 0;
 		hittable_start = -1;
+	}
+	//Using pipe
+	if (isUsingPipe == true)
+	{
+		if (GetTickCount64() - usingPipe_start > 300)
+		{
+			if (usingPipeDirection == 2)
+			{
+				if (level != MARIO_LEVEL_SMALL)
+					SetPosition(usingPipeDestination_X, usingPipeDestination_Y - 10);
+				else
+					SetPosition(usingPipeDestination_X, usingPipeDestination_Y);
+			}
+			else
+				SetPosition(usingPipeDestination_X, usingPipeDestination_Y);
+
+			if (GetTickCount64() - usingPipe_start > 600)
+			{
+				isUsingPipe = false;
+				usingPipe_start = 0;
+				usingPipeDestination_X = 0;
+				usingPipeDestination_Y = 0;
+				usingPipeDirection = 0;
+				ay = MARIO_GRAVITY;
+			}
+
+		}
 	}
 	//flying
 	if (GetTickCount64() - flyable_start > MARIO_P_TIME)
@@ -158,6 +186,16 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithSpecialButton(e);
 	else if (dynamic_cast<CDeadBlock*>(e->obj))
 		OnCollisionWithDeadBlock(e);
+	else if (dynamic_cast<CTeleportPipe*>(e->obj))
+		OnCollisionWithTeleportPipe(e);
+}
+
+void CMario::OnCollisionWithTeleportPipe(LPCOLLISIONEVENT e)
+{
+	CTeleportPipe* pipe = (CTeleportPipe*)e->obj;
+	usingPipeDirection = pipe->GetDirect();
+	usingPipeDestination_X = pipe->GetdesX();
+	usingPipeDestination_Y = pipe->GetdesY();
 }
 
 void CMario::OnCollisionWithDeadBlock(LPCOLLISIONEVENT e)
@@ -679,6 +717,10 @@ int CMario::GetAniIdSmall()
 			else
 				aniId = ID_ANI_MARIO_SMALL_KICK_LEFT;
 		}
+		else if (isUsingPipe)
+		{
+			aniId = ID_ANI_MARIO_SMALL_USING_PIPE;
+		}
 		else
 			if (isSitting)
 			{
@@ -773,6 +815,10 @@ int CMario::GetAniIdBig()
 				aniId = ID_ANI_MARIO_KICK_RIGHT;
 			else
 				aniId = ID_ANI_MARIO_KICK_LEFT;
+		}
+		else if (isUsingPipe)
+		{
+			aniId = ID_ANI_MARIO_USING_PIPE;
 		}
 		else
 			if (isSitting)
@@ -884,6 +930,10 @@ int CMario::GetAniIdTail()
 				aniId = ID_ANI_MARIO_TAIL_KICK_RIGHT;
 			else
 				aniId = ID_ANI_MARIO_TAIL_KICK_LEFT;
+		}
+		else if (isUsingPipe)
+		{
+			aniId = ID_ANI_MARIO_TAIL_USING_PIPE;
 		}
 		else
 			if (isSitting)
@@ -1012,6 +1062,17 @@ void CMario::SetState(int state)
 
 	switch (state)
 	{
+	case MARIO_STATE_USE_PIPE_DOWN:
+		ay = MARIO_GRAVITY / 6;
+		isUsingPipe = true;
+		usingPipe_start = GetTickCount64();
+		break;
+	case MARIO_STATE_USE_PIPE_UP:
+		ay = MARIO_GRAVITY;
+		vy = -MARIO_JUMP_SPEED_Y;
+		isUsingPipe = true;
+		usingPipe_start = GetTickCount64();
+		break;
 	case MARIO_STATE_HIT:
 		if (level == MARIO_LEVEL_TAIL && hittable_start == -1)
 			StartHittable();

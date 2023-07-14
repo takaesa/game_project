@@ -15,6 +15,18 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	{
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT);
+		if (mario->GetUsingPipeDirection() != 0)
+		{
+			if (mario->GetUsingPipeDirection() == 1)
+				mario->SetState(MARIO_STATE_USE_PIPE_DOWN);
+		}
+		break;
+	case DIK_UP:
+		if (mario->GetUsingPipeDirection() != 0)
+		{
+			if (mario->GetUsingPipeDirection() == 2)
+				mario->SetState(MARIO_STATE_USE_PIPE_UP);
+		}
 		break;
 	case DIK_A:
 		mario->SetState(MARIO_STATE_HIT);

@@ -33,6 +33,8 @@
 
 #define MARIO_STATE_HIT 1200
 
+#define MARIO_STATE_USE_PIPE_DOWN 1101
+#define MARIO_STATE_USE_PIPE_UP 1102
 
 #define MARIO_STATE_RUNNING_RIGHT	400
 #define MARIO_STATE_RUNNING_LEFT	500
@@ -81,6 +83,8 @@
 #define ID_ANI_MARIO_CARRY_RIGHT 330
 #define ID_ANI_MARIO_CARRY_LEFT 331
 
+#define ID_ANI_MARIO_USING_PIPE 950
+
 // SMALL MARIO
 #define ID_ANI_MARIO_SMALL_IDLE_RIGHT 1100
 #define ID_ANI_MARIO_SMALL_IDLE_LEFT 1102
@@ -112,6 +116,7 @@
 #define ID_ANI_MARIO_SMALL_CHANGE_TO_MARIO_BIG_RIGHT 1810
 #define ID_ANI_MARIO_SMALL_CHANGE_TO_MARIO_BIG_LEFT 1811
 
+#define ID_ANI_MARIO_SMALL_USING_PIPE 1900
 
 // TAIL MARIO
 #define ID_ANI_MARIO_BIG_CHANGE_TO_MARIO_TAIL_RIGHT 2120
@@ -137,6 +142,7 @@
 #define ID_ANI_MARIO_TAIL_FLY_RIGHT 2620
 #define ID_ANI_MARIO_TAIL_FLY_LEFT 2621
 
+#define ID_ANI_MARIO_TAIL_USING_PIPE 2800
 
 #define ID_ANI_TAIL_LANDING_RIGHT	27000
 #define ID_ANI_TAIL_LANDING_LEFT	27001
@@ -181,6 +187,8 @@
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
+	BOOLEAN isUsingPipe;
+
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -198,7 +206,9 @@ class CMario : public CGameObject
 	int Up;
 	int clock;
 
-
+	int usingPipeDirection = 0;
+	float usingPipeDestination_X = 0;
+	float usingPipeDestination_Y = 0;
 
 	int live;
 	int bonusItem[3] = { -1, -1, -1 };
@@ -209,6 +219,7 @@ class CMario : public CGameObject
 	ULONGLONG change_start;
 	ULONGLONG flyable_start;
 	ULONGLONG henshin_start;
+	ULONGLONG usingPipe_start;
 
 
 	CKoopa* shell = NULL;
@@ -232,6 +243,7 @@ class CMario : public CGameObject
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithSpecialButton(LPCOLLISIONEVENT e);
+	void OnCollisionWithTeleportPipe(LPCOLLISIONEVENT e);
 
 
 	int GetAniIdBig();
@@ -256,10 +268,11 @@ public:
 		change_start = -1;
 		flyable_start = -1;
 		henshin_start = -1;
-
+		usingPipe_start = -1;
 
 		untouchable_start = -1;
 		isOnPlatform = false;
+		isUsingPipe = false;
 		coin = 0;
 		score = 0;
 
@@ -273,8 +286,13 @@ public:
 	}
 
 	int IsCollidable()
-	{ 
-		return (state != MARIO_STATE_DIE); 
+	{
+		if (isUsingPipe)
+			return 0;
+		if (state != MARIO_STATE_DIE)
+			return 1;
+		else if (state == MARIO_STATE_DIE)
+			return 0;
 	}
 
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
@@ -290,16 +308,23 @@ public:
 	int GetCoin() { return this->coin; }
 	int GetClock() { return clock; }
 
+	void SetisUsingPipe(bool isUsingPipe) { this->isUsingPipe = isUsingPipe; }
+	int GetisUsingPipe() { return this->isUsingPipe; }
+	int GetUsingPipeDirection() { return this->usingPipeDirection; }
+
 	void SetLevel(int l);
 	int GetLevel() { return level; }
+
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
 	void StartFlying() { isFlying = true; flyable_start = GetTickCount64(); }
+
 	bool GetCarryingState() { return isCarrying; }
 	bool GetCarryingObject() { return isCarryingObject; }
 	void SetCarryingObject(bool obj) { this->isCarryingObject = obj; }
 	void SetCarryingState(bool a) { this->isCarrying = a; }
+
 	bool GetFlyingState(){ return isFlying; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }

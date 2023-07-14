@@ -19,6 +19,7 @@
 #include "FireBullet.h"
 #include "HUD.h"
 #include "DeadBlock.h"
+#include "TeleportPipe.h"
 
 using namespace std;
 
@@ -155,7 +156,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 	case OBJECT_TYPE_MUSHROOM: obj = new CMushRoom(x, y); break;
 	case OBJECT_TYPE_LEAF: obj = new CLeaf(x, y); break;
-
+	case OBJECT_TYPE_PIPE_TELE:
+	{
+		int direct = (int)atoi(tokens[3].c_str());
+		float desX = (float)atoi(tokens[4].c_str());
+		float desY = (float)atoi(tokens[5].c_str());
+		obj = new CTeleportPipe(x, y, direct, desX, desY);
+		break;
+	}
 	case OBJECT_TYPE_PLATFORM:
 	{
 
@@ -350,7 +358,7 @@ void CPlayScene::Update(DWORD dt)
 	cy -= game->GetBackBufferHeight() / 2;
 
 	if (cx < 0) cx = 0;
-	if (cy > 0) cy = 0;
+	if (cy > 0) cy = 210;
 	else if (cy < 0 && cy > -50) cy = 0;
 	else cy += 40;
 

@@ -129,6 +129,9 @@
     <ClInclude Include="Effect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TeleportPipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -228,6 +231,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TeleportPipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

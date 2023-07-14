@@ -164,6 +164,7 @@
     <ClInclude Include="Special_Button.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprites.h" />
+    <ClInclude Include="TeleportPipe.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TransparentBlock.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Special_Button.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprites.cpp" />
+    <ClCompile Include="TeleportPipe.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TransparentBlock.cpp" />
     <ClCompile Include="Utils.cpp" />
