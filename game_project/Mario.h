@@ -290,7 +290,7 @@ public:
 		isOnPlatform = false;
 		isUsingPipe = false;
 		coin = 12;
-		score = 0;
+		score = 1234234;
 
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

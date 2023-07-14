@@ -88,7 +88,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	// start running
-	if (GetTickCount64() - start_level_run > 150)
+	if (GetTickCount64() - start_level_run > 200)
 	{
 		if (level_run < 7)
 		{
@@ -96,7 +96,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	// stop running
-	if (GetTickCount64() - stop_level_run > 150)
+	if (GetTickCount64() - stop_level_run > 200)
 	{
 		if (level_run > 0)
 		{
@@ -959,7 +959,7 @@ int CMario::GetAniIdTail()
 			}
 			else if (abs(ax) == MARIO_ACCEL_RUN_X || vx != 0.0f)
 			{
-				if (nx >= 0)
+				if (nx > 0)
 					aniId = ID_ANI_TAIL_LANDING_RIGHT;
 				else
 					aniId = ID_ANI_TAIL_LANDING_LEFT;
