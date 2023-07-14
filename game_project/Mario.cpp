@@ -211,43 +211,84 @@ void CMario::OnNoCollision(DWORD dt)
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (e->ny != 0 && e->obj->IsBlocking())
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+	if (currentscene == SCENE_MAP_1_1)
 	{
-		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny != 0 && e->obj->IsBlocking())
+		{
+			vy = 0;
+			if (e->ny < 0) isOnPlatform = true;
+		}
+		else
+			if (e->nx != 0 && e->obj->IsBlocking())
+			{
+				vx = 0;
+			}
+		if (dynamic_cast<CGoomba*>(e->obj))
+			OnCollisionWithGoomba(e);
+		else if (dynamic_cast<CCoin*>(e->obj))
+			OnCollisionWithCoin(e);
+		else if (dynamic_cast<CPortal*>(e->obj))
+			OnCollisionWithPortal(e);
+		else if (dynamic_cast<CBrick*>(e->obj))
+			OnCollisionWithBrick(e);
+		else if (dynamic_cast<CLeaf*>(e->obj))
+			OnCollisionWithLeaf(e);
+		else if (dynamic_cast<CMushRoom*>(e->obj))
+			OnCollisionWithMushRoom(e);
+		else if (dynamic_cast<CQuestionBrick*>(e->obj))
+			OnCollisionWithQuestionBrick(e);
+		else if (dynamic_cast<CPlain*>(e->obj))
+			OnCollisionWithPlain(e);
+		else if (dynamic_cast<CBullet*>(e->obj))
+			OnCollisionWithBullet(e);
+		else if (dynamic_cast<CKoopa*>(e->obj))
+			OnCollisionWithKoopa(e);
+		else if (dynamic_cast<CSpecial_Button*>(e->obj))
+			OnCollisionWithSpecialButton(e);
+		else if (dynamic_cast<CDeadBlock*>(e->obj))
+			OnCollisionWithDeadBlock(e);
+		else if (dynamic_cast<CTeleportPipe*>(e->obj))
+			OnCollisionWithTeleportPipe(e);
 	}
-	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
+	else if (currentscene == SCENE_WORLD_MAP || currentscene == SCENE_INTRO)
 	{
-		vx = 0;
+		if (e->obj->IsBlocking()) {
+			vx = 0;
+			vy = 0;
+		}
+		if (dynamic_cast<CNode*>(e->obj))
+			OnCollisionWithNode(e);
 	}
+}
+void CMario::OnCollisionWithNode(LPCOLLISIONEVENT e)
+{
+	CNode* node = dynamic_cast<CNode*>(e->obj);
+	isAllowLeft = node->GetAllowLeft();
+	isAllowRight = node->GetAllowRight();
+	isAllowUp = node->GetAllowUp();
+	isAllowDown = node->GetAllowDown();
+	if (e->nx != 0) {
+		Go1NodeX(node);
+	}
+	if (e->ny != 0) {
+		Go1NodeY(node);
+	}
+	if (node->GetType() == 2)
+	{
+		SetState(MARIO_SELECTSTAGE_STATE);
+	}
+}
 
-	if (dynamic_cast<CGoomba*>(e->obj))
-		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CCoin*>(e->obj))
-		OnCollisionWithCoin(e);
-	else if (dynamic_cast<CPortal*>(e->obj))
-		OnCollisionWithPortal(e);
-	else if (dynamic_cast<CBrick*>(e->obj))
-		OnCollisionWithBrick(e);
-	else if (dynamic_cast<CLeaf*>(e->obj))
-		OnCollisionWithLeaf(e);
-	else if (dynamic_cast<CMushRoom*>(e->obj))
-		OnCollisionWithMushRoom(e);
-	else if (dynamic_cast<CQuestionBrick*>(e->obj))
-		OnCollisionWithQuestionBrick(e);
-	else if (dynamic_cast<CPlain*>(e->obj))
-		OnCollisionWithPlain(e);
-	else if (dynamic_cast<CBullet*>(e->obj))
-		OnCollisionWithBullet(e);
-	else if (dynamic_cast<CKoopa*>(e->obj))
-		OnCollisionWithKoopa(e);
-	else if (dynamic_cast<CSpecial_Button*>(e->obj))
-		OnCollisionWithSpecialButton(e);
-	else if (dynamic_cast<CDeadBlock*>(e->obj))
-		OnCollisionWithDeadBlock(e);
-	else if (dynamic_cast<CTeleportPipe*>(e->obj))
-		OnCollisionWithTeleportPipe(e);
+void CMario::Go1NodeX(LPGAMEOBJECT gameobject) {
+	float tempY;
+	gameobject->GetPosition(startX, tempY);
+	isGoingNodeX = true;
+}
+void CMario::Go1NodeY(LPGAMEOBJECT gameobject) {
+	float tempX;
+	gameobject->GetPosition(tempX, startY);
+	isGoingNodeY = true;
 }
 
 void CMario::OnCollisionWithTeleportPipe(LPCOLLISIONEVENT e)
