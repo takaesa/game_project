@@ -53,6 +53,14 @@
 #define MARIO_ACCEL_FLY_X 0.0003f
 #define MARIO_STATE_LANDING 1100
 
+#define MARIO_GO_LEFT				1001
+#define MARIO_GO_RIGHT				1002
+#define MARIO_GO_UP					1003
+#define MARIO_GO_DOWN				1004
+#define MARIO_WORLDMAP_SPEED		0.1f
+
+#define MARIO_SELECTSTAGE_STATE		1005
+
 #pragma region ANIMATION_ID
 
 #define ID_ANI_MARIO_IDLE_RIGHT 400
@@ -190,7 +198,7 @@
 
 #define SCENE_INTRO		1
 #define SCENE_WORLD_MAP	2
-#define SCENE_MAP_1_1	3
+#define SCENE_MAP_1_1	5
 #define TIME_CLOCK 300
 
 class CMario : public CGameObject
@@ -218,6 +226,11 @@ class CMario : public CGameObject
 	int time;
 	ULONGLONG count_down_1_sec;
 
+	//world map mario/////////
+	bool isAllowLeft = 0;
+	bool isAllowRight = 0;
+	bool isAllowUp = 0;
+	bool isAllowDown = 0;
 
 	float startX = 0, startY = 0;
 	bool isGoingNodeX = false;
@@ -301,6 +314,14 @@ public:
 		stop_level_run = -1;
 		count_down_1_sec = 0;
 
+		if (currentscene == SCENE_WORLD_MAP)
+		{
+			isAllowRight = 1;
+		}
+		else if (currentscene == SCENE_INTRO)
+		{
+			isAllowDown = 1;
+		}
 		if (currentscene == SCENE_MAP_1_1)
 			time = TIME_CLOCK;
 		else
@@ -372,4 +393,14 @@ public:
 	bool GetFlyingState(){ return isFlying; }
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	BOOLEAN GetIsOnPlatform() { return isOnPlatform; }
+
+	///world map mario
+	bool GetisAllowLeft() { return isAllowLeft; }
+	bool GetisAllowRight() { return isAllowRight; }
+	bool GetisAllowUp() { return isAllowUp; }
+	bool GetisAllowDown() { return isAllowDown; }
+
+	void Go1NodeX(LPGAMEOBJECT gameobject);
+	void Go1NodeY(LPGAMEOBJECT gameobject);
+
 };
