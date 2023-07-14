@@ -27,7 +27,7 @@ void CHUD::Render()
 	//CAnimations::GetInstance()->Get(ID_ANI_0)->Render(x + 40, y - 50);
 
 	// WRITE WORLD
-	DrawNumber(1, x + POSITION_WORLD_X, y - ADJUST_Y_POWER_POSITION);
+	DrawNumber(1, x - 35, y - 53);
 
 	//WRITE M SYMBOL
 	CAnimations::GetInstance()->Get(ID_ANI_M_SYMBOL)->Render(x-64, y - 46);
@@ -68,8 +68,11 @@ void CHUD::Render()
 		DrawNumber((score / 10) % 10, x - 20 + DISTANCE_NUMBER * 5, y - 45);
 		DrawNumber(score % 10, x - 20 + DISTANCE_NUMBER * 6, y - 45);
 
-
-
+		int lives = mario->GetLive();
+		if (lives / 10 > 0) {
+			DrawNumber(lives / 10, x - 43, y - 45);
+		}
+		DrawNumber(lives %10, x - 35, y - 45);
 
 	//	//WRITE CARD
 	//	int card1 = mario->GetCard1();

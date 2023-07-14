@@ -268,7 +268,7 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
-		live = 4;
+		live = 11;
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		kickable = 0;
@@ -323,6 +323,8 @@ public:
 	int GetUp() { return Up; }
 	int GetCoin() { return this->coin; }
 	int GetClock() { return clock; }
+
+	int GetLive() { return live; }
 
 	void SetisUsingPipe(bool isUsingPipe) { this->isUsingPipe = isUsingPipe; }
 	int GetisUsingPipe() { return this->isUsingPipe; }
