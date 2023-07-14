@@ -188,6 +188,11 @@
 
 #define MARIO_UNTOUCHABLE_TIME 2500
 
+#define SCENE_INTRO		1
+#define SCENE_WORLD_MAP	2
+#define SCENE_MAP_1_1	3
+#define TIME_CLOCK 300
+
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -210,7 +215,14 @@ class CMario : public CGameObject
 	int card2;
 	int card3;
 	int Up;
-	int clock;
+	int time;
+	ULONGLONG count_down_1_sec;
+
+
+	float startX = 0, startY = 0;
+	bool isGoingNodeX = false;
+	bool isGoingNodeY = false;
+	//
 
 	int usingPipeDirection = 0;
 	float usingPipeDestination_X = 0;
@@ -268,7 +280,9 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY; 
 
-		live = 11;
+		int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+
+		live = 1;
 		level = MARIO_LEVEL_SMALL;
 		untouchable = 0;
 		kickable = 0;
@@ -285,12 +299,18 @@ public:
 		start_level_run = -1;
 		start_prepare_run = -1;
 		stop_level_run = -1;
+		count_down_1_sec = 0;
+
+		if (currentscene == SCENE_MAP_1_1)
+			time = TIME_CLOCK;
+		else
+			time = TIME_CLOCK;
 
 		untouchable_start = -1;
 		isOnPlatform = false;
 		isUsingPipe = false;
 		coin = 12;
-		score = 1234234;
+		score = 1000;
 
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -322,7 +342,7 @@ public:
 	int GetCard3() { return card3; }
 	int GetUp() { return Up; }
 	int GetCoin() { return this->coin; }
-	int GetClock() { return clock; }
+	int GetTime() { return time; }
 
 	int GetLive() { return live; }
 

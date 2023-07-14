@@ -5,6 +5,7 @@
 
 #include "Mario.h"
 #include "PlayScene.h"
+#include "Mario.h"
 
 void CSampleKeyHandler::OnKeyDown(int KeyCode)
 {
@@ -35,7 +36,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		}
 		break;
 	case DIK_S:
-		if (mario->GetFlyingState() == true)
+		if (mario->GetFlyingState() == true && mario->GetLevelRun() == 7)
 			mario->SetState(MARIO_STATE_FLY);
 		else if (mario->GetIsOnPlatform() == false && mario->GetLevel() == MARIO_LEVEL_TAIL)
 			mario->SetState(MARIO_STATE_LANDING);

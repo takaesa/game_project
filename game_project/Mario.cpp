@@ -25,10 +25,34 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	/*vy += ay * dt;
-	vx += ax * dt;*/
-
-
+	//DebugOutTitle(L"%d", state);
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+	if (currentscene == SCENE_WORLD_MAP || currentscene == SCENE_INTRO)
+	{
+		if (isGoingNodeX == true)
+		{
+			if (vx * (x - startX) >= 0)
+			{
+				x = startX;
+				vx = 0;
+				vy = 0;
+				isGoingNodeX = false;
+			}
+		}
+		if (isGoingNodeY == true)
+		{
+			if (vy * (y - startY) >= 0)
+			{
+				y = startY;
+				vx = 0;
+				vy = 0;
+				isGoingNodeY = false;
+			}
+		}
+		CGameObject::Update(dt, coObjects);
+		CCollision::GetInstance()->Process(this, dt, coObjects);
+		return;
+	}
 	if (isChanging) // changing level so make mario can't moving
 	{
 		vx = 0;
@@ -153,6 +177,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		kickable_start = 0;
 		kickable = 0;
+	}
+
+	//Time
+	if (time > 0/* && currentscene == SCENE_MAP_1_1*/)
+	{
+		if (!isChanging || state != MARIO_STATE_DIE)
+		{
+			if (GetTickCount64() - count_down_1_sec > 1000) // 1 second
+			{
+				time--;
+				count_down_1_sec = GetTickCount64();
+			}
+		}
+	}
+	else
+	{
+		time = 0;
+		SetState(MARIO_STATE_DIE);
 	}
 	
 	isOnPlatform = false;

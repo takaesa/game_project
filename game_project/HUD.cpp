@@ -94,11 +94,11 @@ void CHUD::Render()
 			DrawNumber(coin / 10, x + 60, y - 53);
 		}
 		DrawNumber(coin % 10, x+68, y - 53);
-		//WRITE CLOCK
-		int clock = mario->GetClock();
-		DrawNumber(clock / 100, x + POSITION_CLOCK_X, y - ADJUST_Y_POWER_POSITION_UNDER);
-		DrawNumber((clock / 10) % 10, x + POSITION_CLOCK_X + DISTANCE_NUMBER, y - ADJUST_Y_POWER_POSITION_UNDER);
-		DrawNumber(clock % 10, x + POSITION_CLOCK_X + DISTANCE_NUMBER * 2, y - ADJUST_Y_POWER_POSITION_UNDER);
+		//WRITE TIME 
+		int clock = mario->GetTime();
+		DrawNumber(clock / 100, x + 52, y - 45);
+		DrawNumber((clock / 10) % 10, x + 60, y - 45);
+		DrawNumber(clock % 10, x + 68, y - 45);
 	}
 }
 void CHUD::DrawNumber(int n, float xTemp, float yTemp) {
