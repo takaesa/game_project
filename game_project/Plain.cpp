@@ -7,6 +7,7 @@ CPlain::CPlain(float x, float y, int type) :CGameObject(x, y)
 	this->type = type;
 	base_y = y;
 	shoot_start = -1;
+	biting_start = -1;
 	isShooting = 0;
 	bulletOut = false;
 	dir = -1;
@@ -41,14 +42,24 @@ void CPlain::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float px, py;
 	player->GetPosition(px, py);
 
-	
-	if (abs(x - px) < DETECTZONE && !isShooting && type == 0)
+	if (abs(x - px) < DETECTZONE && type == 2 && y == base_y)
+	{
+		SetState(PLAIN_STATE_BITING);
+		vy = -PLAIN_SPEED;
+	}
+	else if (abs(x - px) < DETECTZONE && !isShooting && type == 0)
 	{
 		SetState(PLAIN_STATE_SHOOTING);
 
 		if (x - px <= 0) dir = 1; else dir = -1;
 
 		vy = -PLAIN_SPEED;
+	}
+
+	if (type == 2 && GetTickCount64() - biting_start > BITE_TIME && y <= base_y - OFFSET)
+	{
+		biting_start = -1;
+		vy = PLAIN_SPEED;
 	}
 	else if (GetTickCount64() - shoot_start > SHOOT_TIME && isShooting == 1)
 	{
