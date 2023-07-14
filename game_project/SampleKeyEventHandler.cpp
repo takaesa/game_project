@@ -29,7 +29,10 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		}
 		break;
 	case DIK_A:
-		mario->SetState(MARIO_STATE_HIT);
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL)
+		{
+			mario->SetState(MARIO_STATE_HIT);
+		}
 		break;
 	case DIK_S:
 		if (mario->GetFlyingState() == true)

@@ -7,11 +7,15 @@
 #include "debug.h"
 
 #define MARIO_WALKING_SPEED		0.1f
-#define MARIO_RUNNING_SPEED		0.25f
+#define MARIO_RUNNING_SPEED		0.15f
 
 #define MARIO_ACCEL_WALK_X	0.0005f
 #define MARIO_ACCEL_RUN_X	0.0007f
 
+#define MARIO_LEVEL_RUN_SPEED 0.01f
+#define MARIO_LEVEL_RUN_MAX 7
+
+#define MARIO_FLY_Y	0.33f
 #define MARIO_JUMP_SPEED_Y		0.5f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
 
@@ -188,6 +192,7 @@ class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
 	BOOLEAN isUsingPipe;
+	BOOLEAN isRunning;
 
 	float maxVx;
 	float ax;				// acceleration on x 
@@ -199,6 +204,7 @@ class CMario : public CGameObject
 	int hittable;
 	bool flyable = false;
 	bool isChanging = false;
+	int level_run;
 
 	int card1;
 	int card2;
@@ -220,6 +226,10 @@ class CMario : public CGameObject
 	ULONGLONG flyable_start;
 	ULONGLONG henshin_start;
 	ULONGLONG usingPipe_start;
+	ULONGLONG start_prepare_run;
+	ULONGLONG stop_level_run;
+	ULONGLONG start_level_run;
+
 
 
 	CKoopa* shell = NULL;
@@ -270,10 +280,16 @@ public:
 		henshin_start = -1;
 		usingPipe_start = -1;
 
+		level_run = 0;
+		isRunning = false;
+		start_level_run = -1;
+		start_prepare_run = -1;
+		stop_level_run = -1;
+
 		untouchable_start = -1;
 		isOnPlatform = false;
 		isUsingPipe = false;
-		coin = 0;
+		coin = 12;
 		score = 0;
 
 	}
@@ -312,13 +328,19 @@ public:
 	int GetisUsingPipe() { return this->isUsingPipe; }
 	int GetUsingPipeDirection() { return this->usingPipeDirection; }
 
+	bool IsBrace() { return (ax * vx < 0); }
+
 	void SetLevel(int l);
 	int GetLevel() { return level; }
 
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartKickable() { kickable = 1; kickable_start = GetTickCount64(); }
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
-	void StartFlying() { isFlying = true; flyable_start = GetTickCount64(); }
+	void StartRunning() { isRunning = true; start_level_run = GetTickCount64(); }
+	void StopRunning() { stop_level_run = GetTickCount64(); }
+	void StartFlying() { isFlying = true; flyable_start = GetTickCount64(); ay = MARIO_GRAVITY/4; }
+
+	int GetLevelRun() { return this->level_run; }
 
 	bool GetCarryingState() { return isCarrying; }
 	bool GetCarryingObject() { return isCarryingObject; }

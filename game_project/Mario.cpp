@@ -87,6 +87,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		}
 	}
+	// start running
+	if (GetTickCount64() - start_level_run > 150)
+	{
+		if (level_run < 7)
+		{
+			level_run++;
+		}
+	}
+	// stop running
+	if (GetTickCount64() - stop_level_run > 150)
+	{
+		if (level_run > 0)
+		{
+			level_run--;
+		}
+	}
+	
 	//flying
 	if (GetTickCount64() - flyable_start > MARIO_P_TIME)
 	{
@@ -681,7 +698,7 @@ void CMario::OnCollisionWithPlain(LPCOLLISIONEVENT e)
 		CEffect* effect = new CEffect(px, py, 0);
 		thisscene->AddObjectToScene(effect);
 		thisscene->AddObjectToScene(score);
-		score += 4000;
+		score+= 4000;
 	}
 	else if (untouchable == 0)
 	{
@@ -1117,7 +1134,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (isSitting) break;
-
+		StopRunning();
 		if (isFlying && !isOnPlatform && flyable)
 			maxVx = MARIO_FLY_SPEED;
 		else if (isCarrying)
@@ -1136,7 +1153,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
-
+		StopRunning();
 		if (isFlying && !isOnPlatform && flyable)
 			maxVx = -MARIO_FLY_SPEED;
 		else if (isCarrying)
@@ -1154,29 +1171,31 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
+		StartRunning();
 		maxVx = MARIO_WALKING_SPEED;
 		ax = MARIO_ACCEL_WALK_X;
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		if (isSitting) break;
+		StartRunning();
 		maxVx = -MARIO_WALKING_SPEED;
 		ax = -MARIO_ACCEL_WALK_X;
 		nx = -1;
 		break;
 	case MARIO_STATE_LANDING:
-		vy = -MARIO_LANDING_SPEED;
+		vy = -MARIO_LANDING_SPEED/2;
 		break;
 	case MARIO_STATE_FLY:
 		if (isFlying)
-			vy = -MARIO_JUMP_SPEED_Y;
+			vy = -(2*MARIO_JUMP_SPEED_Y/3);
 		flyable = true;
 		break;
 	case MARIO_STATE_JUMP:
 		if (isSitting) break;
 		if (isOnPlatform)
 		{
-			if (abs(vx) == abs(MARIO_RUNNING_SPEED) && level == MARIO_LEVEL_TAIL)
+			if (abs(vx) == abs(MARIO_RUNNING_SPEED) && level == MARIO_LEVEL_TAIL && level_run == 7)
 			{
 				StartFlying();
 				vy = -MARIO_JUMP_SPEED_Y;
@@ -1212,8 +1231,10 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_IDLE:
+		StartRunning();
 		ax = 0.0f;
 		vx = 0.0f;
+		ay = MARIO_GRAVITY;
 		break;
 
 	case MARIO_STATE_DIE:
