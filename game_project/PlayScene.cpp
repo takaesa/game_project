@@ -139,6 +139,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CKoopa(x, y, koopaType);
 		break;
 	}
+	case OBJECT_TYPE_NODE:
+	{
+		int type = atoi(tokens[3].c_str());
+		bool allowLeft = atoi(tokens[4].c_str());
+		bool allowRight = atoi(tokens[5].c_str());
+		bool allowUp = atoi(tokens[6].c_str());
+		bool allowDown = atoi(tokens[7].c_str());
+		obj = new CNode(x, y, type, allowLeft, allowRight, allowUp, allowDown);
+		break;
+	}
+
 	case OBJECT_TYPE_PLAIN:
 	{
 		int plaintype = (int)atoi(tokens[3].c_str());
@@ -361,6 +372,14 @@ void CPlayScene::Update(DWORD dt)
 	CGame *game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
+
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+
+	if (currentscene == 2)
+	{
+		cx = cy = 0;
+		return;
+	}
 
 	if (cx < 0)
 	{

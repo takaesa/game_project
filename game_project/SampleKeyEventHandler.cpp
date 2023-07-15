@@ -77,7 +77,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetLevel(MARIO_LEVEL_TAIL);
 			break;
 		case DIK_O:
-			CGame::GetInstance()->InitiateSwitchScene(2);
+			CGame::GetInstance()->InitiateSwitchScene(5);
 			break;
 		case DIK_LEFT:
 		{

@@ -1,5 +1,5 @@
 [SETTINGS]
-start	5
+start	2
 width	320
 height	240
 
@@ -30,4 +30,4 @@ height	240
 40	textures\misc1.png
 41	textures\gameover.png
 42	textures\dialogs.png
-160	textures\Map.png
+43	textures\world_map.png

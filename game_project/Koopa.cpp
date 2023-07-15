@@ -13,6 +13,7 @@
 #include "Plain.h"
 #include "Effect.h"
 #include "Brick.h"
+#include "DeadBlock.h"
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
 	fallwarning = new CFallWarning( x,  y);
@@ -70,6 +71,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithQuestionBrick(e);
 	else if (dynamic_cast<CBrick*>(e->obj))
 		OnCollisionWithBrick(e);
+	else if (dynamic_cast<CDeadBlock*>(e->obj))
+		OnCollisionWithDeadBlock(e);
 	else if (dynamic_cast<CTransparentBlock*>(e->obj))
 	{
 		if (type == 2 && e->obj->GetState() != KOOPA_STATE_SHELL_MOVING)
@@ -142,6 +145,12 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 	{
 		koopa->Delete();
 	}
+}
+
+void CKoopa::OnCollisionWithDeadBlock(LPCOLLISIONEVENT e)
+{
+	if(this->GetType() == 2)
+		this->SetState(GOOMBA_STATE_FLIPPED);
 }
 
 void CKoopa::OnCollisionWithPlain(LPCOLLISIONEVENT e)
