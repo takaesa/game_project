@@ -93,6 +93,8 @@ protected:
 	virtual void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 	virtual void OnCollisionWithPlain(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	virtual void OnCollisionWithDeadBlock(LPCOLLISIONEVENT e);
 	//virtual void OnCollisionWithTransparentBlock(LPCOLLISIONEVENT e);
 	
 public:

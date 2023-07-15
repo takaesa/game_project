@@ -113,7 +113,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 	// start running
-	if (GetTickCount64() - start_level_run > 200)
+	if (GetTickCount64() - start_level_run > 500)
 	{
 		if (level_run < 7)
 		{
@@ -196,6 +196,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		time = 0;
 		SetState(MARIO_STATE_DIE);
+	}
+
+	//reset state
+	if (GetTickCount64() - restart_state > 10000)
+	{
+		LPSCENE thisscene = CGame::GetInstance()->GetCurrentScene();
+		vector<LPGAMEOBJECT> objects = thisscene->GetListObjects();
+		for (int i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<CBrick*>(objects[i]))
+			{
+				if (objects[i]->GetState() == BRICK_STATE_GOLD)
+					objects[i]->SetState(BRICK_STATE_BLINK);
+			}
+		}
 	}
 	
 	isOnPlatform = false;
@@ -584,6 +599,7 @@ void CMario::OnCollisionWithSpecialButton(LPCOLLISIONEVENT e)
 		special_button->SetPressable(false);
 		special_button->SetState(SPECIAL_P_STATE_PRESSED);
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		StartRestartState();
 	}
 }
 
@@ -657,10 +673,9 @@ void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 }
 void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
 {
-	
 	CQuestionBrick* questionbrick = dynamic_cast<CQuestionBrick*>(e->obj);
 	
-	if (e->ny > 0 && questionbrick->IsEmpty() == false)
+	if (e->ny > 0 && questionbrick->IsEmpty() == false || hittable == 1 && questionbrick->IsEmpty() == false)
 	{
 		if (questionbrick->GetBrickType() == 0) // coin
 		{

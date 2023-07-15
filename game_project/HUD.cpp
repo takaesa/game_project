@@ -82,12 +82,6 @@ void CHUD::Render()
 	//	if (card2) DrawCard(card2, x + X_CARD_POSITION + CARD_WIDTH, y + Y_CARD_POSITION);
 	//	if (card3) DrawCard(card3, x + X_CARD_POSITION + CARD_WIDTH * 2, y + Y_CARD_POSITION);
 	//	//DebugOutTitle(L"[CARD 1 2 3 hjhj] %d %d %d \n", card1, card2, card3);
-		// WRITE UP
-		int up = mario->GetUp();
-		if (up / 10 > 0) {
-			DrawNumber(up / 10, x + POSITION_UP_X, y - ADJUST_Y_POWER_POSITION_UNDER);
-		}
-		DrawNumber(up % 10, x + POSITION_UP_X + DISTANCE_NUMBER, y - ADJUST_Y_POWER_POSITION_UNDER);
 		//WRITE COIN
 		int coin = mario->GetCoin();
 		if (coin / 10 > 0) {

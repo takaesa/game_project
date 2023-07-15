@@ -221,10 +221,6 @@ class CMario : public CGameObject
 	bool isChanging = false;
 	int level_run;
 
-	int card1;
-	int card2;
-	int card3;
-	int Up;
 	int time;
 	ULONGLONG count_down_1_sec;
 
@@ -256,6 +252,7 @@ class CMario : public CGameObject
 	ULONGLONG start_prepare_run;
 	ULONGLONG stop_level_run;
 	ULONGLONG start_level_run;
+	ULONGLONG restart_state;
 
 
 
@@ -315,6 +312,7 @@ public:
 		start_prepare_run = -1;
 		stop_level_run = -1;
 		count_down_1_sec = 0;
+		restart_state = 0;
 
 		if (currentscene == SCENE_WORLD_MAP)
 		{
@@ -360,10 +358,6 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	int GetScore() { return score; }
-	int GetCard1() { return card1; }
-	int GetCard2() { return card2; }
-	int GetCard3() { return card3; }
-	int GetUp() { return Up; }
 	int GetCoin() { return this->coin; }
 	int GetTime() { return time; }
 
@@ -383,6 +377,7 @@ public:
 	void StartHittable() { hittable = 1; hittable_start = GetTickCount64(); }
 	void StartRunning() { isRunning = true; start_level_run = GetTickCount64(); }
 	void StopRunning() { stop_level_run = GetTickCount64(); }
+	void StartRestartState() { restart_state = GetTickCount64(); }
 	void StartFlying() { isFlying = true; flyable_start = GetTickCount64(); ay = MARIO_GRAVITY/4; }
 
 	int GetLevelRun() { return this->level_run; }
