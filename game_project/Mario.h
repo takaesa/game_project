@@ -172,7 +172,7 @@
 
 #define GROUND_Y 160.0f
 
-#define ID_ANI_MARIO_SMALL_MINI 1160
+#define ID_ANI_MARIO_SMALL_MINI 1161
 #define ID_ANI_MARIO_BIG_MINI 1170
 #define ID_ANI_MARIO_TANOOKI_MINI 1180
 #define ID_ANI_MARIO_INTRO 2999
@@ -263,6 +263,11 @@ class CMario : public CGameObject
 	BOOLEAN isOnPlatform;
 	int coin;
 	int score;
+
+	int card1;
+	int card2;
+	int card3;
+	int cardCollected;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -362,6 +367,11 @@ public:
 	int GetTime() { return time; }
 
 	int GetLive() { return live; }
+
+	int GetCard1() { return card1; }
+	int GetCard2() { return card2; }
+	int GetCard3() { return card3; }
+	int GetCardCollected() { return cardCollected; }
 
 	void SetisUsingPipe(bool isUsingPipe) { this->isUsingPipe = isUsingPipe; }
 	int GetisUsingPipe() { return this->isUsingPipe; }

@@ -372,6 +372,7 @@ void CPlayScene::Update(DWORD dt)
 	CGame *game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
+	DebugOutTitle(L"%f", cx);
 
 	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
 
@@ -389,7 +390,7 @@ void CPlayScene::Update(DWORD dt)
 	else if (cy > 70) cy = 210;
 	else if (cy < 70 && cy > -50) cy = 0;
 	else cy += 40;
-
+	if (cx > 2605) cx = 2605;
 
 	CGame::GetInstance()->SetCamPos(cx, cy);
 
@@ -400,13 +401,17 @@ void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+	if (currentscene != SCENE_INTRO)
+	{
+		float camX, camY;
+		CGame* game = CGame::GetInstance();
 
-	float camX, camY;
-	CGame* game = CGame::GetInstance();
+		game->GetCamPos(camX, camY);
+		CHUD* hud = new CHUD(camX + 150, camY + 280);
+		hud->Render();
+	}
 	
-	game->GetCamPos(camX, camY);
-	CHUD* hud = new CHUD(camX + 150, camY + 280);
-	hud->Render();
 }
 
 /*

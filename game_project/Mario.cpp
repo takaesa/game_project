@@ -1195,12 +1195,12 @@ void CMario::Render()
 	}
 	else if (currentscene == SCENE_WORLD_MAP)
 	{
-		if (level == MARIO_LEVEL_SMALL)
+		//if (level == MARIO_LEVEL_SMALL)
 			aniId = ID_ANI_MARIO_SMALL_MINI;
-		else if (level == MARIO_LEVEL_BIG)
+		/*else if (level == MARIO_LEVEL_BIG)
 			aniId = ID_ANI_MARIO_BIG_MINI;
 		else if (level == MARIO_LEVEL_TAIL)
-			aniId = ID_ANI_MARIO_TANOOKI_MINI;
+			aniId = ID_ANI_MARIO_TANOOKI_MINI;*/
 
 		animations->Get(aniId)->Render(x, y);
 	}
@@ -1213,7 +1213,7 @@ void CMario::Render()
 	}
 	RenderBoundingBox();
 	
-	DebugOutTitle(L"Coins: %d", coin);
+	//DebugOutTitle(L"Coins: %d", coin);
 }
 
 void CMario::SetState(int state)
