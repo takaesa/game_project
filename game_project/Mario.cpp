@@ -24,6 +24,7 @@
 #include "TeleportPipe.h"
 #include "Node.h"
 #include "HUD.h"
+#include "RandomCard.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -266,6 +267,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 			OnCollisionWithDeadBlock(e);
 		else if (dynamic_cast<CTeleportPipe*>(e->obj))
 			OnCollisionWithTeleportPipe(e);
+		else if (dynamic_cast<CRandomCard*>(e->obj))
+			OnCollisionWithRandomCard(e);
 	}
 	else if (currentscene == SCENE_WORLD_MAP || currentscene == SCENE_INTRO)
 	{
@@ -275,6 +278,82 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		}
 		if (dynamic_cast<CNode*>(e->obj))
 			OnCollisionWithNode(e);
+	}
+}
+void CMario::OnCollisionWithRandomCard(LPCOLLISIONEVENT e)
+{
+	CRandomCard* randomcard = dynamic_cast<CRandomCard*>(e->obj);
+	if (e->ny > 0)
+	{
+		int cardState = randomcard->GetState();
+		SetState(MARIO_END_MAP_STATE);
+		/*cardblock->SetisHit(true);
+		if (card_1 == 0)
+		{
+			if (cardState == CARD_FLOWER_STATE)
+			{
+				card_1 = TYPE_CARD_FLOWER;
+				dataGame->SetCard_1(card_1);
+			}
+			else if (cardState == CARD_MUSHROOM_STATE)
+			{
+				card_1 = TYPE_CARD_MUSHROOM;
+				dataGame->SetCard_1(card_1);
+			}
+			else if (cardState == CARD_STAR_STATE)
+			{
+				card_1 = TYPE_CARD_STAR;
+				dataGame->SetCard_1(card_1);
+			}
+		}
+		else if (card_2 == 0)
+		{
+			if (cardState == CARD_FLOWER_STATE)
+			{
+				card_2 = TYPE_CARD_FLOWER;
+				dataGame->SetCard_2(card_2);
+			}
+			else if (cardState == CARD_MUSHROOM_STATE)
+			{
+				card_2 = TYPE_CARD_MUSHROOM;
+				dataGame->SetCard_2(card_2);
+			}
+			else if (cardState == CARD_STAR_STATE)
+			{
+				card_2 = TYPE_CARD_STAR;
+				dataGame->SetCard_2(card_2);
+			}
+		}
+		else if (card_3 == 0)
+		{
+			if (cardState == CARD_FLOWER_STATE)
+			{
+				card_3 = TYPE_CARD_FLOWER;
+				dataGame->SetCard_3(card_3);
+			}
+			else if (cardState == CARD_MUSHROOM_STATE)
+			{
+				card_3 = TYPE_CARD_MUSHROOM;
+				dataGame->SetCard_3(card_3);
+			}
+			else if (cardState == CARD_STAR_STATE)
+			{
+				card_3 = TYPE_CARD_STAR;
+				dataGame->SetCard_3(card_3);
+			}
+		}
+		if (cardState == CARD_FLOWER_STATE)
+		{
+			disPlaycard = TYPE_CARD_FLOWER;
+		}
+		else if (cardState == CARD_MUSHROOM_STATE)
+		{
+			disPlaycard = TYPE_CARD_MUSHROOM;
+		}
+		else if (cardState == CARD_STAR_STATE)
+		{
+			disPlaycard = TYPE_CARD_STAR;
+		}*/
 	}
 }
 void CMario::OnCollisionWithNode(LPCOLLISIONEVENT e)
@@ -1220,6 +1299,7 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
+	if (this->state == MARIO_END_MAP_STATE)return;
 	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
 	if (currentscene == SCENE_MAP_1_1)
 	{

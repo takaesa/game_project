@@ -284,6 +284,7 @@ class CMario : public CGameObject
 	void OnCollisionWithSpecialButton(LPCOLLISIONEVENT e);
 	void OnCollisionWithTeleportPipe(LPCOLLISIONEVENT e);
 	void OnCollisionWithNode(LPCOLLISIONEVENT e);
+	void OnCollisionWithRandomCard(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();

@@ -21,6 +21,7 @@
 #include "DeadBlock.h"
 #include "TeleportPipe.h"
 #include "Node.h"
+#include "RandomCard.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -158,6 +159,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
+	case OBJECT_TYPE_RANDOM_CARD:	obj = new CRandomCard(x, y); break;
 	case OBJECT_TYPE_QUESTION_BRICK:
 	{
 		int brick_type = (int)atoi(tokens[3].c_str());
