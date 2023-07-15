@@ -93,6 +93,12 @@ void CHUD::Render()
 		DrawNumber(clock / 100, x + 52, y - 45);
 		DrawNumber((clock / 10) % 10, x + 60, y - 45);
 		DrawNumber(clock % 10, x + 68, y - 45);
+		
+		if (mario->GetState() == MARIO_END_MAP_STATE)
+		{
+			CAnimations::GetInstance()->Get(ID_ANI_END_GAME)->Render(x, y - 170);
+			//DrawCard(mario->GetCardCollected(), x + 60, y - 150);
+		}
 	}
 }
 void CHUD::DrawNumber(int n, float xTemp, float yTemp) {

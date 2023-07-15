@@ -23,6 +23,7 @@
 #include "Effect.h"
 #include "TeleportPipe.h"
 #include "Node.h"
+#include "HUD.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -1232,6 +1233,15 @@ void CMario::SetState(int state)
 
 		switch (state)
 		{
+		case MARIO_END_MAP_STATE:
+		{
+			maxVx = MARIO_WALKING_SPEED;
+			ax = MARIO_ACCEL_WALK_X;
+			nx = 1;
+			isRunning = false;
+
+			break;
+		}
 		case MARIO_STATE_USE_PIPE_DOWN:
 			ay = MARIO_GRAVITY / 6;
 			isUsingPipe = true;

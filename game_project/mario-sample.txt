@@ -33,3 +33,4 @@ height	240
 43	textures\world_map.png
 44	textures\intro.png
 160	textures\Map.png
+170	textures\goal.png
