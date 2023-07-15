@@ -1155,26 +1155,46 @@ void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
-
-	if (state == MARIO_STATE_DIE)
-		aniId = ID_ANI_MARIO_DIE;
-	else if (level == MARIO_LEVEL_BIG)
-		aniId = GetAniIdBig();
-	else if (level == MARIO_LEVEL_SMALL)
-		aniId = GetAniIdSmall();
-	else if (level == MARIO_LEVEL_TAIL)
-		aniId = GetAniIdTail();
-	if (!untouchable)
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+	if (currentscene == SCENE_MAP_1_1)
 	{
-		animations->Get(aniId)->Render(x, y);
-	}
-	else if (untouchable)
-	{
-		int check = rand() % 2;
-		if (check == 0)
+		if (state == MARIO_STATE_DIE)
+			aniId = ID_ANI_MARIO_DIE;
+		else if (level == MARIO_LEVEL_BIG)
+			aniId = GetAniIdBig();
+		else if (level == MARIO_LEVEL_SMALL)
+			aniId = GetAniIdSmall();
+		else if (level == MARIO_LEVEL_TAIL)
+			aniId = GetAniIdTail();
+		if (!untouchable)
 		{
 			animations->Get(aniId)->Render(x, y);
 		}
+		else if (untouchable)
+		{
+			int check = rand() % 2;
+			if (check == 0)
+			{
+				animations->Get(aniId)->Render(x, y);
+			}
+	}
+	else if (currentscene == SCENE_WORLD_MAP)
+	{
+		if (level == MARIO_LEVEL_SMALL)
+			aniId = ID_ANI_MARIO_SMALL_MINI;
+		else if (level == MARIO_LEVEL_BIG)
+			aniId = ID_ANI_MARIO_BIG_MINI;
+		else if (level == MARIO_LEVEL_TAIL)
+			aniId = ID_ANI_MARIO_TANOOKI_MINI;
+
+		animations->Get(aniId)->Render(x, y);
+	}
+	else if (currentscene == SCENE_INTRO)
+	{
+		aniId = ID_ANI_MARIO_INTRO;
+		animations->Get(aniId)->Render(x, y);
+	}
+	
 	}
 	//RenderBoundingBox();
 	
@@ -1184,149 +1204,218 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE && live > 0)
+	int currentscene = CGame::GetInstance()->GetCurrentSceneNumber();
+	if (currentscene == SCENE_MAP_1_1)
 	{
-		SetPosition(15, 150);
-		live--;
-		level = MARIO_LEVEL_SMALL;
-	}
-	else if (this->state == MARIO_STATE_DIE && live == 0) return; 
-
-	switch (state)
-	{
-	case MARIO_STATE_USE_PIPE_DOWN:
-		ay = MARIO_GRAVITY / 6;
-		isUsingPipe = true;
-		usingPipe_start = GetTickCount64();
-		break;
-	case MARIO_STATE_USE_PIPE_UP:
-		ay = MARIO_GRAVITY;
-		vy = -MARIO_JUMP_SPEED_Y;
-		isUsingPipe = true;
-		usingPipe_start = GetTickCount64();
-		break;
-	case MARIO_STATE_HIT:
-		if (level == MARIO_LEVEL_TAIL && hittable_start == -1)
-			StartHittable();
-		break;
-	case MARIO_STATE_CARRY_RELEASE:
-		if (isCarrying == true)
+		if (this->state == MARIO_STATE_DIE && live > 0)
 		{
-			isCarrying = false;
-			shell->SetState(KOOPA_STATE_SHELL_MOVING);
+			SetPosition(15, 150);
+			live--;
+			level = MARIO_LEVEL_SMALL;
 		}
-		break;
-	case MARIO_STATE_RUNNING_RIGHT:
-		if (isSitting) break;
-		StopRunning();
-		if (isFlying && !isOnPlatform && flyable)
-			maxVx = MARIO_FLY_SPEED;
-		else if (isCarrying)
-			maxVx = MARIO_RUNNING_SPEED;
-		else if (isOnPlatform)
-			maxVx = MARIO_RUNNING_SPEED;
-		
-		if (vx < 0)
-			ax = MARIO_ACCEL_RUN_X * 3;
-		else if (isFlying == true && !isOnPlatform && flyable)
-			ax = MARIO_ACCEL_FLY_X;
-		else if (isOnPlatform)
-			ax = MARIO_ACCEL_RUN_X;
-		
-		nx = 1;
-		break;
-	case MARIO_STATE_RUNNING_LEFT:
-		if (isSitting) break;
-		StopRunning();
-		if (isFlying && !isOnPlatform && flyable)
-			maxVx = -MARIO_FLY_SPEED;
-		else if (isCarrying)
-			maxVx = -MARIO_RUNNING_SPEED;
-		else if (isOnPlatform)
-			maxVx = -MARIO_RUNNING_SPEED;
+		else if (this->state == MARIO_STATE_DIE && live == 0) return;
 
-		if (vx > 0)
-			ax = -MARIO_ACCEL_RUN_X * 3;
-		else if (isFlying == true && !isOnPlatform && flyable)
-			ax = -MARIO_ACCEL_FLY_X;
-		else if (isOnPlatform)
-			ax = -MARIO_ACCEL_RUN_X;
-		nx = -1;
-		break;
-	case MARIO_STATE_WALKING_RIGHT:
-		if (isSitting) break;
-		StartRunning();
-		maxVx = MARIO_WALKING_SPEED;
-		ax = MARIO_ACCEL_WALK_X;
-		nx = 1;
-		break;
-	case MARIO_STATE_WALKING_LEFT:
-		if (isSitting) break;
-		StartRunning();
-		maxVx = -MARIO_WALKING_SPEED;
-		ax = -MARIO_ACCEL_WALK_X;
-		nx = -1;
-		break;
-	case MARIO_STATE_LANDING:
-		vy = -MARIO_LANDING_SPEED/2;
-		break;
-	case MARIO_STATE_FLY:
-		if (isFlying)
-			vy = -(2*MARIO_JUMP_SPEED_Y/3);
-		flyable = true;
-		break;
-	case MARIO_STATE_JUMP:
-		if (isSitting) break;
-		if (isOnPlatform)
+		switch (state)
 		{
-			if (abs(vx) == abs(MARIO_RUNNING_SPEED) && level == MARIO_LEVEL_TAIL && level_run == 7)
+		case MARIO_STATE_USE_PIPE_DOWN:
+			ay = MARIO_GRAVITY / 6;
+			isUsingPipe = true;
+			usingPipe_start = GetTickCount64();
+			break;
+		case MARIO_STATE_USE_PIPE_UP:
+			ay = MARIO_GRAVITY;
+			vy = -MARIO_JUMP_SPEED_Y;
+			isUsingPipe = true;
+			usingPipe_start = GetTickCount64();
+			break;
+		case MARIO_STATE_HIT:
+			if (level == MARIO_LEVEL_TAIL && hittable_start == -1)
+				StartHittable();
+			break;
+		case MARIO_STATE_CARRY_RELEASE:
+			if (isCarrying == true)
 			{
-				StartFlying();
-				vy = -MARIO_JUMP_SPEED_Y;
+				isCarrying = false;
+				shell->SetState(KOOPA_STATE_SHELL_MOVING);
 			}
-			else if (abs(this->vx) == MARIO_RUNNING_SPEED)
-				vy = -MARIO_JUMP_RUN_SPEED_Y;
-			else
-				vy = -MARIO_JUMP_SPEED_Y;
+			break;
+		case MARIO_STATE_RUNNING_RIGHT:
+			if (isSitting) break;
+			StopRunning();
+			if (isFlying && !isOnPlatform && flyable)
+				maxVx = MARIO_FLY_SPEED;
+			else if (isCarrying)
+				maxVx = MARIO_RUNNING_SPEED;
+			else if (isOnPlatform)
+				maxVx = MARIO_RUNNING_SPEED;
+
+			if (vx < 0)
+				ax = MARIO_ACCEL_RUN_X * 3;
+			else if (isFlying == true && !isOnPlatform && flyable)
+				ax = MARIO_ACCEL_FLY_X;
+			else if (isOnPlatform)
+				ax = MARIO_ACCEL_RUN_X;
+
+			nx = 1;
+			break;
+		case MARIO_STATE_RUNNING_LEFT:
+			if (isSitting) break;
+			StopRunning();
+			if (isFlying && !isOnPlatform && flyable)
+				maxVx = -MARIO_FLY_SPEED;
+			else if (isCarrying)
+				maxVx = -MARIO_RUNNING_SPEED;
+			else if (isOnPlatform)
+				maxVx = -MARIO_RUNNING_SPEED;
+
+			if (vx > 0)
+				ax = -MARIO_ACCEL_RUN_X * 3;
+			else if (isFlying == true && !isOnPlatform && flyable)
+				ax = -MARIO_ACCEL_FLY_X;
+			else if (isOnPlatform)
+				ax = -MARIO_ACCEL_RUN_X;
+			nx = -1;
+			break;
+		case MARIO_STATE_WALKING_RIGHT:
+			if (isSitting) break;
+			StartRunning();
+			maxVx = MARIO_WALKING_SPEED;
+			ax = MARIO_ACCEL_WALK_X;
+			nx = 1;
+			break;
+		case MARIO_STATE_WALKING_LEFT:
+			if (isSitting) break;
+			StartRunning();
+			maxVx = -MARIO_WALKING_SPEED;
+			ax = -MARIO_ACCEL_WALK_X;
+			nx = -1;
+			break;
+		case MARIO_STATE_LANDING:
+			vy = -MARIO_LANDING_SPEED / 2;
+			break;
+		case MARIO_STATE_FLY:
+			if (isFlying)
+				vy = -(2 * MARIO_JUMP_SPEED_Y / 3);
+			flyable = true;
+			break;
+		case MARIO_STATE_JUMP:
+			if (isSitting) break;
+			if (isOnPlatform)
+			{
+				if (abs(vx) == abs(MARIO_RUNNING_SPEED) && level == MARIO_LEVEL_TAIL && level_run == 7)
+				{
+					StartFlying();
+					vy = -MARIO_JUMP_SPEED_Y;
+				}
+				else if (abs(this->vx) == MARIO_RUNNING_SPEED)
+					vy = -MARIO_JUMP_RUN_SPEED_Y;
+				else
+					vy = -MARIO_JUMP_SPEED_Y;
+			}
+			break;
+
+		case MARIO_STATE_RELEASE_JUMP:
+			if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
+			break;
+
+		case MARIO_STATE_SIT:
+			if (isOnPlatform && level != MARIO_LEVEL_SMALL)
+			{
+				state = MARIO_STATE_IDLE;
+				isSitting = true;
+				vx = 0; vy = 0.0f;
+				y += MARIO_SIT_HEIGHT_ADJUST;
+			}
+			break;
+
+		case MARIO_STATE_SIT_RELEASE:
+			if (isSitting)
+			{
+				isSitting = false;
+				state = MARIO_STATE_IDLE;
+				y -= MARIO_SIT_HEIGHT_ADJUST;
+			}
+			break;
+
+		case MARIO_STATE_IDLE:
+			StartRunning();
+			ax = 0.0f;
+			vx = 0.0f;
+			ay = MARIO_GRAVITY;
+			break;
+
+		case MARIO_STATE_DIE:
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			vx = 0;
+			ax = 0;
+			break;
 		}
-		break;
 
-	case MARIO_STATE_RELEASE_JUMP:
-		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
-		break;
-
-	case MARIO_STATE_SIT:
-		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
-		{
-			state = MARIO_STATE_IDLE;
-			isSitting = true;
-			vx = 0; vy = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
-		}
-		break;
-
-	case MARIO_STATE_SIT_RELEASE:
-		if (isSitting)
-		{
-			isSitting = false;
-			state = MARIO_STATE_IDLE;
-			y -= MARIO_SIT_HEIGHT_ADJUST;
-		}
-		break;
-
-	case MARIO_STATE_IDLE:
-		StartRunning();
-		ax = 0.0f;
-		vx = 0.0f;
-		ay = MARIO_GRAVITY;
-		break;
-
-	case MARIO_STATE_DIE:
-		vy = -MARIO_JUMP_DEFLECT_SPEED;
-		vx = 0;
-		ax = 0;
-		break;
 	}
+	else if (currentscene == SCENE_WORLD_MAP)
+	{
+		switch (state)
+		{
+		case MARIO_GO_LEFT:
+		{
+			vy = 0.0f;
+			vx = -MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		case MARIO_GO_RIGHT:
+		{
+			vy = 0.0f;
+			vx = MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		case MARIO_GO_UP:
+		{
+			vx = 0.0f;
+			vy = -MARIO_WORLDMAP_SPEED;
+			break;
+		}case MARIO_GO_DOWN:
+		{
+			vx = 0.0f;
+			vy = MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	else if (currentscene == SCENE_INTRO)
+	{
+		switch (state)
+		{
+		case MARIO_GO_LEFT:
+		{
+			vy = 0.0f;
+			vx = -MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		case MARIO_GO_RIGHT:
+		{
+			vy = 0.0f;
+			vx = MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		case MARIO_GO_UP:
+		{
+			vx = 0.0f;
+			vy = -MARIO_WORLDMAP_SPEED;
+			break;
+		}case MARIO_GO_DOWN:
+		{
+			vx = 0.0f;
+			vy = MARIO_WORLDMAP_SPEED;
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	
 
 	CGameObject::SetState(state);
 }

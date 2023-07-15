@@ -30,3 +30,4 @@ height	240
 40	textures\misc1.png
 41	textures\gameover.png
 42	textures\dialogs.png
+160	textures\Map.png
